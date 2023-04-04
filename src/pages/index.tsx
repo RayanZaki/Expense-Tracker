@@ -4,7 +4,11 @@ import Paging from "@/Components/Utils/Paging";
 import TransactionList from "@/Components/Transaction/TransactionList";
 import { calculateBalance, list } from "@/tests";
 
+const func = async () => {
+  await fetch("/api/test");
+};
 const Home = () => {
+  func();
   const title = "Transaction List:";
   return (
     <DashBoard>

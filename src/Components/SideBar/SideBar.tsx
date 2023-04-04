@@ -1,11 +1,12 @@
-import React, { useContext } from "react";
+import React, { MouseEventHandler, useContext } from "react";
 import { useRouter } from "next/router";
 import profile from "public/png/png.png";
 import Image from "next/image";
 import Link from "next/link";
 import { ModalContext } from "@/Components/DashBoard/DashBoard";
-const SideBar = ({ userName }) => {
-  let { show, toggleModal } = useContext(ModalContext);
+const SideBar = ({ userName }: { userName: String }) => {
+  let { show, toggleModal }: { show: boolean; toggleModal: MouseEventHandler } =
+    useContext(ModalContext);
   let route = useRouter().route;
   return (
     <div className="flex flex-col justify-start fixed left-0 gap-10 w-80 text-center h-[100vh] p-2">
@@ -24,7 +25,6 @@ const SideBar = ({ userName }) => {
           <li className={route === "/" ? "btn btn-bg" : "btn"}>Overview</li>
         </Link>
         <Link className="z-0" href="/category" draggable="false">
-          {/*<li className={route === "/category" ? "btn btn-bg" : "btn"}>*/}
           <li className={route === "/category" ? "btn btn-bg" : "btn"}>
             Category
           </li>

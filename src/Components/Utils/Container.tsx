@@ -1,5 +1,5 @@
 import React from "react";
-import ContainerProps from "@/Interfaces/ContainerProps.ts";
+import ContainerProps from "@/Interfaces/ContainerProps";
 
 const Container = ({ title, children, bottom, extra }: ContainerProps) => {
   return (
