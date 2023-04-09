@@ -5,8 +5,8 @@ import { useRouter } from "next/router";
 const Card = ({ category }: CardProps) => {
   let [name, setName] = useState(category);
   let [modifying, setModifying] = useState(false);
-  const modifyHandler = (e) => {
-    setName(e.target.value);
+  const modifyHandler = (event) => {
+    setName(event.target.value);
   };
   const title = useRef(null);
   const router = useRouter();

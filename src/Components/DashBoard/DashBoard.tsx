@@ -7,8 +7,6 @@ import React, {
 import Modal from "@/Components/Utils/Modal";
 import SideBar from "@/Components/SideBar/SideBar";
 import Container from "@/Components/Utils/Container";
-import Category from "@/pages/category";
-import defaultCategories from "@/Components/DashBoard/defaultCategories";
 import TransactionForm from "@/Components/Transaction/TransactionForm";
 import { bool } from "prop-types";
 
@@ -28,16 +26,12 @@ const DashBoard = ({ children }: { children: ReactComponentElement<any> }) => {
   };
 
   const addTransactionTitle = "Add Transaction";
-  // Here we might use the default Categories
-  // Then Add the user defined ones to this variable
-  let categories: Array<String>;
-  categories = defaultCategories;
 
   return (
     <>
       <Modal show={show} onHide={toggleModal}>
         <Container title={addTransactionTitle}>
-          <TransactionForm categories={categories} />
+          <TransactionForm />
         </Container>
       </Modal>
       <ModalContext.Provider value={{ show, toggleModal }}>
