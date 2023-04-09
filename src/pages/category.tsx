@@ -1,4 +1,4 @@
-import React, { ChangeEvent, createContext, useContext, useState } from "react";
+import React, { ChangeEvent, createContext, useState } from "react";
 import Container from "@/Components/Utils/Container";
 import Card from "@/Components/Utils/Card";
 import DashBoard from "@/Components/DashBoard/DashBoard";
@@ -59,7 +59,7 @@ const Category = ({
             </Container>
             <Container title="All categories">
               <div className="flex flex-row flex-wrap gap-10 m-5 justify-center">
-                {categories.map((cat, index) => (
+                {categories.map((cat) => (
                   <Card key={cat._id} category={cat.name} />
                 ))}
               </div>
