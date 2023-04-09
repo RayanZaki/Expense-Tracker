@@ -1,8 +1,4 @@
-import { GetServerSidePropsContext } from "next";
-import {
-  addCategory,
-  editCategory,
-} from "../../../../lib/utils/mongo/categories";
+import { editCategory } from "../../../../lib/utils/mongo/categories";
 
 const Update = async (req: Request, res: Response) => {
   try {

@@ -1,6 +1,5 @@
 import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
 import { addCategory } from "../../../../lib/utils/mongo/categories";
-import { commandSupportsReadConcern } from "mongodb/src/utils";
 
 const Add = async (req: Request, res: Response) => {
   if (req.method === "POST") {
@@ -14,11 +13,10 @@ const Add = async (req: Request, res: Response) => {
       res.send({ success: true });
     } catch (e) {
       console.log(e);
-      res.status(400).send({ error: e, success: false });
+      res.status(200).send({ error: e, success: false });
     }
   } else {
-    res.status = 403;
-    res.send({ error: { message: "bad method" }, success: false });
+    res.status(402).send({ error: { message: "bad method" }, success: false });
   }
 };
 

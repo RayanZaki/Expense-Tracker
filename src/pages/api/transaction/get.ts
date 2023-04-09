@@ -1,4 +1,3 @@
-import React from "react";
 import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
 import { getTransactions } from "../../../../lib/utils/mongo/transaction";
 
