@@ -1,5 +1,5 @@
 import React from "react";
-import { showAllCategories } from "../../../../lib/utils/mongo/ExpenseTracker";
+import { showAllCategories } from "../../../../lib/utils/mongo/categories";
 
 const Get = async (req: Request, res: Response) => {
   if (req.method === "GET") {

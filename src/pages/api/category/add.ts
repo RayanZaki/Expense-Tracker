@@ -1,5 +1,5 @@
 import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
-import { addCategory } from "../../../../lib/utils/mongo/ExpenseTracker";
+import { addCategory } from "../../../../lib/utils/mongo/categories";
 import { commandSupportsReadConcern } from "mongodb/src/utils";
 
 const Add = async (req: Request, res: Response) => {

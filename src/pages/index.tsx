@@ -2,8 +2,9 @@ import DashBoard from "@/Components/DashBoard/DashBoard";
 import Container from "@/Components/Utils/Container";
 import Paging from "@/Components/Utils/Paging";
 import TransactionList from "@/Components/Transaction/TransactionList";
-import { calculateBalance, list } from "@/tests";
+import { calculateBalance } from "@/tests";
 import { createContext } from "react";
+import { transaction } from "@/Interfaces/TransactionProps";
 
 export const indexContext = createContext({
   provided: false,
@@ -11,8 +12,10 @@ export const indexContext = createContext({
 });
 const Home = ({
   categories,
+  transactions,
 }: {
   categories: Array<{ _id: string; name: string }>;
+  transactions: Array<transaction>;
 }) => {
   const title = "Transaction List:";
 
@@ -25,13 +28,13 @@ const Home = ({
               title={title}
               extra={
                 <p>
-                  Balance: {calculateBalance(list)}
+                  Balance: {calculateBalance(transactions)}
                   <span className="text-sm"> DZD</span>
                 </p>
               }
-              bottom={<Paging size={list.length} max={5} />}
+              bottom={<Paging size={transactions.length} max={5} />}
             >
-              <TransactionList list={list} />
+              <TransactionList list={transactions} />
             </Container>
           </div>
         </div>
@@ -42,8 +45,26 @@ const Home = ({
 
 export default Home;
 
-export async function getStaticProps() {
-  const cats = await fetch("http://localhost:3000/api/category/get");
-  const categories = await cats.json();
-  return { props: { categories: categories.categories } };
+export async function getServerSideProps() {
+  const [categoriesReq, transactionsReq] = await Promise.all([
+    fetch("http://localhost:3000/api/category/get").then((res) => res.json()),
+    fetch("http://localhost:3000/api/transaction/get").then((res) =>
+      res.json()
+    ),
+  ]);
+
+  console.log();
+
+  for (let elem of transactionsReq.transactions) {
+    elem.category = categoriesReq.categories.find(
+      (e: { _id: string; name: string }) => e._id === elem.category
+    ).name;
+  }
+
+  return {
+    props: {
+      categories: categoriesReq.categories,
+      transactions: transactionsReq.transactions,
+    },
+  };
 }

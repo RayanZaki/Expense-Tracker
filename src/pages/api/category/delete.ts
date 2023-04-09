@@ -2,7 +2,7 @@ import React from "react";
 import {
   addCategory,
   deleteCategory,
-} from "../../../../lib/utils/mongo/ExpenseTracker";
+} from "../../../../lib/utils/mongo/categories";
 import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
 
 const Delete = async (req: Request, res: Response) => {
