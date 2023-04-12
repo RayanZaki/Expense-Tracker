@@ -1,18 +1,16 @@
 import mongoose from "mongoose";
 import Transaction from "./Models/Transaction";
 import { transaction } from "@/Interfaces/TransactionProps";
-import { decrementCount, getId, updateSalary } from "./meta";
+import { decrementCount, getId, incrementCount, updateSalary } from "./meta";
 
 mongoose.connect(process.env.MONGO_URI!).then(() => console.log("connected"));
 
-export async function getTransactions() {
-  return Transaction.find({});
+export async function getTransactions(start: number) {
+  start = start === undefined ? 0 : start;
+  return Transaction.find({}).skip(start).limit(5);
 }
 
 export async function addTransaction(t: transaction) {
-  // get the new index for the new transaction
-  const index = await getId();
-
   // increment the number of transactions
 
   const newTransaction = new Transaction({
@@ -26,6 +24,7 @@ export async function addTransaction(t: transaction) {
   return await Promise.all([
     newTransaction.save(),
     updateSalary(t.type == "Expense", t.amount),
+    incrementCount(),
   ]);
 }
 

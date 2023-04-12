@@ -1,6 +1,5 @@
 import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
 import { addTransaction } from "../../../../lib/utils/mongo/transaction";
-import { transaction } from "@/Interfaces/TransactionProps";
 
 const Get = async (req: Request, res: Response) => {
   if (req.method == "POST") {
