@@ -2,10 +2,15 @@ import { showAllCategories } from "../../../../lib/utils/mongo/categories";
 
 const Get = async (req: Request, res: Response) => {
   if (req.method === "GET") {
-    const cats = await showAllCategories();
-    res.send({ categories: cats, success: true });
+    try {
+      const cats = await showAllCategories();
+      res.send({ categories: cats, success: true });
+    } catch (e) {
+      console.log(e);
+      res.send({ message: e, success: false });
+    }
   } else {
-    res.status(404).send({ success: false });
+    res.status(403).send({ success: false });
   }
 };
 

@@ -5,6 +5,7 @@ import TransactionList from "@/Components/Transaction/TransactionList";
 import { calculateBalance } from "@/tests";
 import { createContext } from "react";
 import { transaction } from "@/Interfaces/TransactionProps";
+import { useRouter } from "next/router";
 
 export const indexContext = createContext({
   provided: false,
@@ -17,6 +18,7 @@ const Home = ({
   categories: Array<{ _id: string; name: string }>;
   transactions: Array<transaction>;
 }) => {
+  const router = useRouter();
   const title = "Transaction List:";
 
   return (
@@ -34,7 +36,7 @@ const Home = ({
               }
               bottom={<Paging size={transactions.length} max={5} />}
             >
-              <TransactionList list={transactions} />
+              <TransactionList list={transactions} router={router} />
             </Container>
           </div>
         </div>
@@ -52,8 +54,6 @@ export async function getServerSideProps() {
       res.json()
     ),
   ]);
-
-  console.log();
 
   for (let elem of transactionsReq.transactions) {
     elem.category = categoriesReq.categories.find(

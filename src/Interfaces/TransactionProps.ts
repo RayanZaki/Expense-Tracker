@@ -1,13 +1,18 @@
+import { MouseEventHandler } from "react";
+
 export default interface TransactionProps {
   data?: transaction;
 
   header?: boolean | undefined;
+  onClick?: MouseEventHandler;
 }
 
 export interface transaction {
-  title: String;
+  _id: string;
+  index: number;
+  title: string;
   amount: number;
   date: string;
-  category: String;
+  category: string;
   type: "Expense" | "Revenue";
 }

@@ -1,5 +1,6 @@
 import { Schema, model, models, Model } from "mongoose";
 import { ObjectId } from "mongodb";
+import { number } from "prop-types";
 
 let transaction: Model<any>;
 const transactionSchema = new Schema({

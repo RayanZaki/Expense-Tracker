@@ -25,9 +25,8 @@ const Category = ({
         category: input,
       }),
     })
-      .then((value) => console.log(value))
+      .then(() => router.reload())
       .catch((reason) => console.log(reason));
-    router.reload();
   };
   return (
     <categoryContext.Provider value={{ provided: true, props: categories }}>

@@ -1,19 +1,20 @@
 import { editCategory } from "../../../../lib/utils/mongo/categories";
 
 const Update = async (req: Request, res: Response) => {
-  try {
-    if (req.method === "POST") {
+  if (req.method === "POST") {
+    try {
       const body = req.body;
       const { oldName, newName } = JSON.parse(body);
       if (oldName === null || newName === null)
         throw Error("oncorrect paramters");
       await editCategory(oldName, newName);
       res.send({ success: true });
-    } else {
-      res.status(405).send({ success: false });
+    } catch (e) {
+      console.log(e);
+      res.send({ message: e, success: false });
     }
-  } catch (e) {
-    console.log(e);
+  } else {
+    res.status(405).send({ message: "bad method", success: false });
   }
 };
 

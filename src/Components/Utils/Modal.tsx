@@ -3,7 +3,7 @@ import ModalProps from "@/Interfaces/ModalProps";
 
 const Modal = ({ show, onHide, children }: ModalProps) => {
   const style = show
-    ? "fixed w-[100%] h-[100%] bg-black/80 z-50"
+    ? "fixed top-0 left-0 w-[100%] h-[100%] bg-black/80 z-50"
     : "fixed hidden";
 
   return (

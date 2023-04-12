@@ -5,7 +5,6 @@ const Add = async (req: Request, res: Response) => {
   if (req.method === "POST") {
     try {
       // @ts-ignore
-      console.log(req.body);
       const body: string = req.body;
       if (body === null) throw Error("no category");
       const { category } = await JSON.parse(body);
@@ -13,10 +12,10 @@ const Add = async (req: Request, res: Response) => {
       res.send({ success: true });
     } catch (e) {
       console.log(e);
-      res.status(200).send({ error: e, success: false });
+      res.status(400).send({ message: e, success: false });
     }
   } else {
-    res.status(402).send({ error: { message: "bad method" }, success: false });
+    res.status(402).send({ message: "bad method", success: false });
   }
 };
 

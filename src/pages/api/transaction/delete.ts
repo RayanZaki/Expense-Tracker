@@ -1,13 +1,12 @@
-import { deleteCategory } from "../../../../lib/utils/mongo/categories";
 import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
+import { deleteTransaction } from "../../../../lib/utils/mongo/transaction";
 
 const Delete = async (req: Request, res: Response) => {
-  if (req.method === "POST") {
+  if (req.method === "DELETE") {
     try {
       const body: string = req.body;
-      if (body === null) throw Error("no category");
-      const { category } = await JSON.parse(body);
-      await deleteCategory(category);
+      const { id } = await JSON.parse(body);
+      await deleteTransaction(id);
       res.send({ success: true });
     } catch (e) {
       console.log(e);

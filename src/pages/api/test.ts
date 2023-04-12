@@ -1,13 +1,13 @@
 import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
-import { getTransactions } from "../../../../lib/utils/mongo/transaction";
+import { getId } from "../../../lib/utils/mongo/transaction";
 
 const Get = async (req: Request, res: Response) => {
   if (req.method == "GET") {
     try {
-      const transactions = await getTransactions(0, 5);
+      const meta = await getId();
       await res.send({
         success: true,
-        transactions: transactions,
+        meta: meta,
       });
     } catch (e) {
       console.log(e);

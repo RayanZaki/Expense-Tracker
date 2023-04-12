@@ -31,7 +31,7 @@
     @apply [&>*]:font-bold [&>*]:text-5xl [&>*]:text-secondary p-8
 }
 
-[type="radio"]{
+.invisible-radio{
     @apply invisible absolute
 }
 
