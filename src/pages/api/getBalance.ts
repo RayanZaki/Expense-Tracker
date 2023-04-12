@@ -1,13 +1,13 @@
 import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
-import { getId } from "../../../lib/utils/mongo/transaction";
+import { getSalary } from "../../../lib/utils/mongo/meta";
 
-const Get = async (req: Request, res: Response) => {
+const GetBalance = async (req: Request, res: Response) => {
   if (req.method == "GET") {
     try {
-      const meta = await getId();
+      const balance = await getSalary();
       await res.send({
         success: true,
-        meta: meta,
+        balance: balance,
       });
     } catch (e) {
       console.log(e);
@@ -19,4 +19,4 @@ const Get = async (req: Request, res: Response) => {
   return;
 };
 
-export default Get;
+export default GetBalance;

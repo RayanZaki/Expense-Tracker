@@ -6,6 +6,7 @@ import { calculateBalance } from "@/tests";
 import { createContext } from "react";
 import { transaction } from "@/Interfaces/TransactionProps";
 import { useRouter } from "next/router";
+import { getSalary } from "../../lib/utils/mongo/meta";
 
 export const indexContext = createContext({
   provided: false,
@@ -14,9 +15,11 @@ export const indexContext = createContext({
 const Home = ({
   categories,
   transactions,
+  balance,
 }: {
   categories: Array<{ _id: string; name: string }>;
   transactions: Array<transaction>;
+  balance: number;
 }) => {
   const router = useRouter();
   const title = "Transaction List:";
@@ -30,7 +33,7 @@ const Home = ({
               title={title}
               extra={
                 <p>
-                  Balance: {calculateBalance(transactions)}
+                  Balance: {balance}
                   <span className="text-sm"> DZD</span>
                 </p>
               }
@@ -48,11 +51,16 @@ const Home = ({
 export default Home;
 
 export async function getServerSideProps() {
-  const [categoriesReq, transactionsReq] = await Promise.all([
-    fetch("http://localhost:3000/api/category/get").then((res) => res.json()),
+  const [categoriesReq, transactionsReq, balanceReq] = await Promise.all([
+    fetch("http://localhost:3000/api/category/get")
+      .then((res) => res.json())
+      .catch((e) => console.error(e)),
     fetch("http://localhost:3000/api/transaction/get").then((res) =>
-      res.json()
+      res.json().catch((e) => console.error(e))
     ),
+    fetch("http://localhost:3000/api/getBalance")
+      .then((res) => res.json())
+      .catch((e) => console.error(e)),
   ]);
 
   for (let elem of transactionsReq.transactions) {
@@ -65,6 +73,7 @@ export async function getServerSideProps() {
     props: {
       categories: categoriesReq.categories,
       transactions: transactionsReq.transactions,
+      balance: balanceReq.balance,
     },
   };
 }

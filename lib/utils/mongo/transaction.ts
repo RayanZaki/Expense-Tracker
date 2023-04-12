@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 import Transaction from "./Models/Transaction";
 import { transaction } from "@/Interfaces/TransactionProps";
-import meta from "./Models/MetaData";
-import { decrementCount, getId } from "./meta";
+import { decrementCount, getId, updateSalary } from "./meta";
 
 mongoose.connect(process.env.MONGO_URI!).then(() => console.log("connected"));
 
@@ -24,10 +23,20 @@ export async function addTransaction(t: transaction) {
     amount: t.amount,
   });
 
-  return await newTransaction.save();
+  return await Promise.all([
+    newTransaction.save(),
+    updateSalary(t.type == "Expense", t.amount),
+  ]);
 }
 
-export async function deleteTransaction(id: string) {
-  await Transaction.deleteOne({ _id: id });
-  await decrementCount();
+export async function deleteTransaction(
+  id: string,
+  expense: boolean,
+  amount: number
+) {
+  await Promise.all([
+    decrementCount(),
+    Transaction.deleteOne({ _id: id }),
+    updateSalary(!expense, amount),
+  ]);
 }

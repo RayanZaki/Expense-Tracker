@@ -13,6 +13,9 @@ const metaDataSchema = new Schema({
   latestIndex: {
     type: Number,
   },
+  totalBalance: {
+    type: Number,
+  },
 });
 
 meta = models.meta || model("meta", metaDataSchema);

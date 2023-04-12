@@ -4,7 +4,7 @@ export default interface TransactionProps {
   data?: transaction;
 
   header?: boolean | undefined;
-  onClick?: MouseEventHandler;
+  onClick?: Function;
 }
 
 export interface transaction {
