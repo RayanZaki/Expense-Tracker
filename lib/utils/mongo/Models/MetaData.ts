@@ -1,6 +1,5 @@
 import { Schema, model, models, Model } from "mongoose";
-import { ObjectId } from "mongodb";
-import { number } from "prop-types";
+import { Long, ObjectId } from "mongodb";
 
 let meta: Model<any>;
 const metaDataSchema = new Schema({

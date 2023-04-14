@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Transaction from "./Models/Transaction";
 import { transaction } from "@/Interfaces/TransactionProps";
-import { decrementCount, getId, incrementCount, updateSalary } from "./meta";
+import { decrementCount, incrementCount, updateSalary } from "./meta";
 
 mongoose.connect(process.env.MONGO_URI!).then(() => console.log("connected"));
 
@@ -21,9 +21,9 @@ export async function addTransaction(t: transaction) {
     amount: t.amount,
   });
 
-  return await Promise.all([
+  return Promise.all([
     newTransaction.save(),
-    updateSalary(t.type == "Expense", t.amount),
+    updateSalary(t.type == "Expense", t.amount as number),
     incrementCount(),
   ]);
 }

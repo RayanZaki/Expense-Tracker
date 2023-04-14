@@ -21,7 +21,7 @@ const Paging = (Props: {
   };
   return (
     <div className="flex justify-center p-6 border-t-1 gap-4">
-      {current - Props.max >= 0 && (
+      {current > 5 && (
         <Image
           className={"hover:cursor-pointer"}
           src={left.src}

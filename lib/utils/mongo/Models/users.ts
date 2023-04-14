@@ -1,0 +1,16 @@
+import { Schema, model, models, Model } from "mongoose";
+import { ObjectId } from "mongodb";
+import { number, string } from "prop-types";
+
+let user: Model<any>;
+const userSchema = new Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+  subUser: { type: String, required: false },
+  parentUser: { type: ObjectId, required: false },
+});
+
+user = models.user || model("user", userSchema);
+
+export default user;

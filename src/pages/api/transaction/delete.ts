@@ -6,7 +6,7 @@ const Delete = async (req: Request, res: Response) => {
     try {
       const body: string = req.body;
       const { id, type, amount } = await JSON.parse(body);
-      await deleteTransaction(id, type == "Expense", amount);
+      await deleteTransaction(id, type == "Expense", amount as number);
       res.send({ success: true });
     } catch (e) {
       console.log(e);

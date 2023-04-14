@@ -2,9 +2,10 @@ import meta from "./Models/MetaData";
 
 export async function updateSalary(expense: boolean, amount: number) {
   const metadata = await meta.find({});
+  const currentSalary: number = metadata[0].totalBalance as number;
   let newSalary: number = expense
-    ? metadata[0].totalBalance - amount
-    : metadata[0].totalBalance + amount;
+    ? currentSalary - amount
+    : currentSalary + amount;
   return meta.updateOne({ _id: metadata[0]._id }, { totalBalance: newSalary });
 }
 
