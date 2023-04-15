@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import CardProps from "@/Interfaces/CardProps";
 import { useRouter } from "next/router";
+import { useCookies } from "react-cookie";
 
 const Card = ({ category }: CardProps) => {
   let [name, setName] = useState(category);
@@ -10,11 +11,13 @@ const Card = ({ category }: CardProps) => {
   };
   const title = useRef(null);
   const router = useRouter();
+  const [emailCookie] = useCookies("email");
   const deleteCat = (name: string) => {
     fetch("http://localhost:3000/api/category/delete", {
-      method: "POST",
+      method: "DELETE",
       body: JSON.stringify({
         category: name,
+        user: emailCookie.email,
       }),
     }).catch((e) => console.log("error: ", e));
     router.reload();
@@ -35,6 +38,7 @@ const Card = ({ category }: CardProps) => {
             body: JSON.stringify({
               oldName: category,
               newName: name,
+              user: emailCookie.email,
             }),
           })
             .then((value) => console.log(value))

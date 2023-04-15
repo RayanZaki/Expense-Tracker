@@ -3,14 +3,21 @@ import Container from "@/Components/Utils/Container";
 import Card from "@/Components/Utils/Card";
 import DashBoard from "@/Components/DashBoard/DashBoard";
 import { useRouter } from "next/router";
+import { useCookies } from "react-cookie";
+import cookie from "cookie";
+import { NextRequest } from "next/server";
 export const categoryContext = createContext({
   provided: false,
   props: {},
 });
 const Category = ({
   categories,
+  email,
+  userName,
 }: {
   categories: Array<{ _id: string; name: string }>;
+  email: string;
+  userName: string;
 }) => {
   const router = useRouter();
   let [input, changeInput] = useState("");
@@ -23,6 +30,7 @@ const Category = ({
       method: "POST",
       body: JSON.stringify({
         category: input,
+        user: email,
       }),
     })
       .then(() => router.reload())
@@ -30,7 +38,7 @@ const Category = ({
   };
   return (
     <categoryContext.Provider value={{ provided: true, props: categories }}>
-      <DashBoard>
+      <DashBoard userName={userName}>
         <div className="body">
           <div className="active">
             <Container title="Add Category: ">
@@ -72,8 +80,20 @@ const Category = ({
 
 export default Category;
 
-export async function getServerSideProps() {
-  const cats = await fetch("http://localhost:3000/api/category/get");
+export async function getServerSideProps({ req }: { req: NextRequest }) {
+  const browserCookie = cookie.parse(
+    req ? req.headers.cookie || "" : document.cookie
+  );
+  const cats = await fetch(
+    `http://localhost:3000/api/category/get?user=${browserCookie["email"]}`
+  );
   const categories = await cats.json();
-  return { props: { categories: categories.categories } };
+  console.log(categories);
+  return {
+    props: {
+      categories: categories.categories,
+      email: browserCookie["email"],
+      userName: browserCookie["username"],
+    },
+  };
 }
