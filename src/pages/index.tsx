@@ -5,6 +5,9 @@ import TransactionList from "@/Components/Transaction/TransactionList";
 import { createContext, useEffect, useRef, useState } from "react";
 import { transaction } from "@/Interfaces/TransactionProps";
 import { useRouter } from "next/router";
+import Router from "next/router";
+import { NextRequest, NextResponse } from "next/server";
+import cookie from "cookie";
 
 export const indexContext = createContext({
   provided: false,
@@ -15,11 +18,13 @@ const Home = ({
   transactions,
   balance,
   size,
+  userName,
 }: {
   categories: Array<{ _id: string; name: string }>;
   transactions: Array<transaction>;
   balance: number;
   size: number;
+  userName: string;
 }) => {
   const router = useRouter();
 
@@ -41,7 +46,7 @@ const Home = ({
   }, [currentPos]);
   return (
     <indexContext.Provider value={{ provided: true, props: categories }}>
-      <DashBoard>
+      <DashBoard userName={userName}>
         <div className="body">
           <div className="active">
             <Container
@@ -71,7 +76,25 @@ const Home = ({
 
 export default Home;
 
-export async function getServerSideProps() {
+export async function getServerSideProps({
+  req,
+  res,
+}: {
+  req: NextRequest;
+  res: NextResponse;
+}) {
+  const browserCookie = cookie.parse(
+    req ? req.headers.cookie || "" : document.cookie
+  );
+  const username = browserCookie["username"];
+  if (username == undefined) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
   const [categoriesReq, transactionsReq, balanceReq] = await Promise.all([
     fetch("http://localhost:3000/api/category/get")
       .then((res) => res.json())
@@ -90,6 +113,7 @@ export async function getServerSideProps() {
       transactions: transactionsReq.transactions,
       size: transactionsReq.size,
       balance: balanceReq.balance,
+      userName: username,
     },
   };
 }

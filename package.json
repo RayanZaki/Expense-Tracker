@@ -10,9 +10,13 @@
   },
   "dependencies": {
     "@types/mongoose": "^5.11.97",
+    "@types/next": "^9.0.0",
     "@types/node": "18.15.9",
     "@types/react": "18.0.29",
     "@types/react-dom": "18.0.11",
+    "bootstrap": "^5.2.3",
+    "cookie": "^0.5.0",
+    "cookie-cutter": "^0.2.0",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "mongoose": "^7.0.3",
@@ -22,6 +26,7 @@
     "typescript": "^5.0.2"
   },
   "devDependencies": {
+    "@types/cookie": "^0.5.1",
     "@types/react-helmet": "^6.1.6",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.21",

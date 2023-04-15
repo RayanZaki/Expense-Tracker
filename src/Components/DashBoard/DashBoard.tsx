@@ -16,11 +16,14 @@ export const ModalContext: Context<any> = createContext({
   toggleModal: Function,
 });
 
-const DashBoard = ({ children }: { children: ReactComponentElement<any> }) => {
+const DashBoard = ({
+  userName,
+  children,
+}: {
+  userName: string;
+  children: ReactComponentElement<any>;
+}) => {
   let [show, setShow] = useState(false);
-
-  // For now it is constant but will be queried from Db
-  let userName = "RayanZak";
   const toggleModal = () => {
     setShow(!show);
   };
