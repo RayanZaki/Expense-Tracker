@@ -4,10 +4,16 @@ import profile from "public/png/png.png";
 import Image from "next/image";
 import Link from "next/link";
 import { ModalContext } from "@/Components/DashBoard/DashBoard";
+import Router from "next/router";
 const SideBar = ({ userName }: { userName: String }) => {
   let { show, toggleModal }: { show: boolean; toggleModal: MouseEventHandler } =
     useContext(ModalContext);
   let route = useRouter().route;
+  const logout = () => {
+    fetch("http://localhost:3000/api/logout")
+      .then(() => Router.push("/login"))
+      .catch((e) => console.log(e));
+  };
   return (
     <div className="flex flex-col justify-start fixed left-0 gap-10 w-80 text-center h-[100vh] p-2">
       <div className="flex flex-col jus gap-5">
@@ -33,6 +39,9 @@ const SideBar = ({ userName }: { userName: String }) => {
           <li className={show ? "btn btn-bg" : "btn"}>Add Transaction</li>
         </button>
       </ul>
+      <button className={"btn"} onClick={logout}>
+        Logout
+      </button>
     </div>
   );
 };

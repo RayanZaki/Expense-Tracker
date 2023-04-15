@@ -1,8 +1,8 @@
-import { getUserName, login } from "../../../lib/utils/mongo/user";
+import { getUserId, getUserName, login } from "../../../lib/utils/mongo/user";
 import { NextRequest, NextResponse } from "next/server";
 import { serialize } from "cookie";
 import cookie from "cookie";
-const GetBalance = async (req: NextRequest, res: NextResponse) => {
+const Login = async (req: NextRequest, res: NextResponse) => {
   if (req.method == "POST") {
     try {
       const body = req.body;
@@ -14,13 +14,17 @@ const GetBalance = async (req: NextRequest, res: NextResponse) => {
       let exists: boolean = await login(email, password);
       if (exists) {
         const username = await getUserName(email);
-        res.setHeader(
+        await res.setHeader(
+          "Set-Cookie",
+          serialize("email", email, { path: "/" })
+        );
+        await res.setHeader(
           "Set-Cookie",
           serialize("username", username, { path: "/" })
         );
-        res.redirect("/");
+        await res.redirect("/");
       } else {
-        res.status(401).redirect("/login");
+        await res.status(401).redirect("/login");
       }
     } catch (e) {
       console.log(e);
@@ -32,4 +36,4 @@ const GetBalance = async (req: NextRequest, res: NextResponse) => {
   return;
 };
 
-export default GetBalance;
+export default Login;

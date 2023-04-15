@@ -26,8 +26,6 @@ const Login = () => {
                 method="post"
                 data-parsley-validate=""
                 data-parsley-errors-messages-disabled="true"
-                // novalidate=""
-                // _lpchecked="1"
               >
                 <input
                   type="hidden"
@@ -37,7 +35,7 @@ const Login = () => {
                 <div className="form-group required">
                   <label htmlFor="email">Email</label>
                   <input
-                    type="text"
+                    type="email"
                     className="form-control text-lowercase"
                     id="email"
                     required

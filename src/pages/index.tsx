@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import Router from "next/router";
 import { NextRequest, NextResponse } from "next/server";
 import cookie from "cookie";
+import { useCookies } from "react-cookie";
 
 export const indexContext = createContext({
   provided: false,
@@ -27,11 +28,15 @@ const Home = ({
   userName: string;
 }) => {
   const router = useRouter();
-
+  const [emailCookie] = useCookies(["email"]);
   let [transactionsList, setTransactions] = useState(transactions);
+  // index of the current position / 5
   let [currentPos, setCurrentPos] = useState(0);
   useEffect(() => {
-    fetch(`http://localhost:3000/api/transaction/get?start=${currentPos}`)
+    const email = emailCookie.email;
+    fetch(
+      `http://localhost:3000/api/transaction/get?start=${currentPos}&email=${email}`
+    )
       .then((res) => {
         res.json().then((res) => {
           for (let elem of res.transactions) {
@@ -87,7 +92,8 @@ export async function getServerSideProps({
     req ? req.headers.cookie || "" : document.cookie
   );
   const username = browserCookie["username"];
-  if (username == undefined) {
+  const email = browserCookie["email"];
+  if (username == undefined || username == "") {
     return {
       redirect: {
         destination: "/login",
@@ -96,13 +102,13 @@ export async function getServerSideProps({
     };
   }
   const [categoriesReq, transactionsReq, balanceReq] = await Promise.all([
-    fetch("http://localhost:3000/api/category/get")
+    fetch(`http://localhost:3000/api/category/get`)
       .then((res) => res.json())
       .catch((e) => console.error(e)),
-    fetch(`http://localhost:3000/api/transaction/get?start=0`)
+    fetch(`http://localhost:3000/api/transaction/get?start=0&email=${email}`)
       .then((res) => res.json())
       .catch((e) => console.error(e)),
-    fetch("http://localhost:3000/api/getBalance")
+    fetch(`http://localhost:3000/api/getBalance?user=${email}`)
       .then((res) => res.json())
       .catch((e) => console.error(e)),
   ]);

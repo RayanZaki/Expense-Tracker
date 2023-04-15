@@ -4,6 +4,10 @@ import { number } from "prop-types";
 
 let transaction: Model<any>;
 const transactionSchema = new Schema({
+  owner: {
+    type: ObjectId,
+    required: true,
+  },
   title: {
     type: String,
     required: true,

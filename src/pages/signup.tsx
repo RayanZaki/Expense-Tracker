@@ -30,7 +30,7 @@ const Signup = () => {
                   <label htmlFor="username">Username</label>
                   <input
                     type="text"
-                    className="form-control text-lowercase"
+                    className="form-control"
                     id="username"
                     required
                     name="username"
@@ -43,7 +43,7 @@ const Signup = () => {
                   <input
                     type="email"
                     className="form-control text-lowercase"
-                    id="username"
+                    id="email"
                     required
                     name="email"
                     value={email}

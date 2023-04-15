@@ -1,14 +1,16 @@
 import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
 import { getTransactions } from "../../../../lib/utils/mongo/transaction";
 import { getSize } from "../../../../lib/utils/mongo/meta";
+import { getUserId } from "../../../../lib/utils/mongo/user";
+import user from "../../../../lib/utils/mongo/Models/users";
 
 const Get = async (req: Request, res: Response) => {
   if (req.method == "GET") {
     try {
-      const size = await getSize();
-      console.log(size);
-      const start = req.query.start;
-      const transactions = await getTransactions(start);
+      const { email, start } = req.query;
+      const userId = await getUserId(email);
+      const size = await getSize(userId);
+      const transactions = await getTransactions(start, userId);
       await res.send({
         success: true,
         transactions: transactions,

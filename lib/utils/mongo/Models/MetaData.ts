@@ -7,10 +7,8 @@ const metaDataSchema = new Schema({
     type: Number,
   },
   user: {
-    type: String,
-  },
-  latestIndex: {
-    type: Number,
+    type: ObjectId,
+    required: true,
   },
   totalBalance: {
     type: Number,

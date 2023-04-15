@@ -27,8 +27,12 @@ export async function signUp(user: {
   return newUser.save();
 }
 
+export async function getUserId(email: string) {
+  const res = await Users.findOne({ email: email });
+  return res._id;
+}
+
 export async function getUserName(email: string) {
-  if (!(await checkIfExists(email))) return;
   const res = await Users.findOne({ email: email }).select("username");
   return res.username;
 }

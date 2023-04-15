@@ -1,10 +1,13 @@
 import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
-import user from "../../../lib/utils/mongo/Models/users";
-import { checkIfExists, signUp } from "../../../lib/utils/mongo/user";
-import { useRouter } from "next/router";
+import {
+  checkIfExists,
+  getUserId,
+  signUp,
+} from "../../../lib/utils/mongo/user";
 import { serialize } from "cookie";
+import { createUserMetaData } from "../../../lib/utils/mongo/meta";
 
-const GetBalance = async (req: Request, res: Response) => {
+const login = async (req: Request, res: Response) => {
   if (req.method == "POST") {
     try {
       const body = req.body;
@@ -14,10 +17,7 @@ const GetBalance = async (req: Request, res: Response) => {
         username == undefined ||
         password == undefined
       ) {
-        res.send({
-          success: false,
-          message: "undefined parameters",
-        });
+        await res.redirect("/signup");
       }
 
       let exists: boolean = await checkIfExists(email);
@@ -28,10 +28,13 @@ const GetBalance = async (req: Request, res: Response) => {
           username: username,
           password: password,
         });
-        await res.setHeader(
+        await createUserMetaData(await getUserId(email));
+        res.setHeader(
           "Set-Cookie",
           serialize("username", username, { path: "/" })
         );
+        res.setHeader("Set-Cookie", serialize("email", email, { path: "/" }));
+
         await res.status(302).redirect("/");
       } else {
         await res.redirect("/signup");
@@ -46,4 +49,4 @@ const GetBalance = async (req: Request, res: Response) => {
   return;
 };
 
-export default GetBalance;
+export default login;

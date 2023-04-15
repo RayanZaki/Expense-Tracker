@@ -1,7 +1,12 @@
 import meta from "./Models/MetaData";
+import MetaData from "./Models/MetaData";
 
-export async function updateSalary(expense: boolean, amount: number) {
-  const metadata = await meta.find({});
+export async function updateSalary(
+  expense: boolean,
+  amount: number,
+  user: string
+) {
+  const metadata = await meta.find({ user: user });
   const currentSalary: number = metadata[0].totalBalance as number;
   let newSalary: number = expense
     ? currentSalary - amount
@@ -9,21 +14,21 @@ export async function updateSalary(expense: boolean, amount: number) {
   return meta.updateOne({ _id: metadata[0]._id }, { totalBalance: newSalary });
 }
 
-export async function getSalary() {
-  const metadata = await meta.find({});
-  return metadata[0].totalBalance;
+export async function getSalary(user: string) {
+  const metadata = await meta.findOne({ user: user });
+  return metadata.totalBalance;
 }
 
-export async function incrementCount() {
-  const metadata = await meta.find({});
+export async function incrementCount(user: string) {
+  const metadata = await meta.find({ user: user });
   let newNumber = metadata[0].numberOfTransactions + 1;
   await meta.updateOne(
     { _id: metadata[0]._id },
     { numberOfTransactions: newNumber }
   );
 }
-export async function decrementCount() {
-  const metadata = await meta.find({});
+export async function decrementCount(user: string) {
+  const metadata = await meta.find({ user: user });
   let newNumber = metadata[0].numberOfTransactions - 1;
   await meta.updateOne(
     { _id: metadata[0]._id },
@@ -31,12 +36,24 @@ export async function decrementCount() {
   );
 }
 
-export async function getSize() {
+export async function getSize(user: string) {
   try {
-    const metadata = await meta.find({});
-    return metadata[0].numberOfTransactions;
+    const metadata = await meta.findOne({ user: user });
+    return metadata.numberOfTransactions;
   } catch (e) {
     console.log(e);
-    return 0;
+  }
+}
+
+export async function createUserMetaData(user: string) {
+  try {
+    const metadata = new MetaData({
+      user: user,
+      numberOfTransactions: 0,
+      totalBalance: 0,
+    });
+    return metadata.save();
+  } catch (e) {
+    console.log(e);
   }
 }
