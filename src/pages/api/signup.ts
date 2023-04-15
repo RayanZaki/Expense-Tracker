@@ -29,11 +29,14 @@ const login = async (req: Request, res: Response) => {
           password: password,
         });
         await createUserMetaData(await getUserId(email));
-        res.setHeader(
+        await res.setHeader(
           "Set-Cookie",
           serialize("username", username, { path: "/" })
         );
-        res.setHeader("Set-Cookie", serialize("email", email, { path: "/" }));
+        await res.setHeader(
+          "Set-Cookie",
+          serialize("email", email, { path: "/" })
+        );
 
         await res.status(302).redirect("/");
       } else {
@@ -42,9 +45,11 @@ const login = async (req: Request, res: Response) => {
     } catch (e) {
       console.log(e);
       res.status(400).send({ message: e, success: false });
+      await res.status(400).redirect("/signup");
     }
   } else {
     res.status(403).send({ message: "Bad method", success: false });
+    await res.status(403).redirect("/signup");
   }
   return;
 };

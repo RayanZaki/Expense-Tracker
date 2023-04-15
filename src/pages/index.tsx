@@ -5,10 +5,10 @@ import TransactionList from "@/Components/Transaction/TransactionList";
 import { createContext, useEffect, useRef, useState } from "react";
 import { transaction } from "@/Interfaces/TransactionProps";
 import { useRouter } from "next/router";
-import Router from "next/router";
-import { NextRequest, NextResponse } from "next/server";
 import cookie from "cookie";
 import { useCookies } from "react-cookie";
+import { NextApiRequest, NextApiResponse } from "next";
+import { getUserName } from "../../lib/utils/mongo/user";
 
 export const indexContext = createContext({
   provided: false,
@@ -35,7 +35,7 @@ const Home = ({
   useEffect(() => {
     const email = emailCookie.email;
     fetch(
-      `http://localhost:3000/api/transaction/get?start=${currentPos}&email=${email}`
+      `http://localhost:3000/api/transaction/get?start=${currentPos}&user=${email}`
     )
       .then((res) => {
         res.json().then((res) => {
@@ -85,15 +85,14 @@ export async function getServerSideProps({
   req,
   res,
 }: {
-  req: NextRequest;
-  res: NextResponse;
+  req: NextApiRequest;
+  res: NextApiResponse;
 }) {
   const browserCookie = cookie.parse(
     req ? req.headers.cookie || "" : document.cookie
   );
-  const username = browserCookie["username"];
   const email = browserCookie["email"];
-  if (username == undefined || username == "") {
+  if (email == undefined || email == "") {
     return {
       redirect: {
         destination: "/login",
@@ -101,18 +100,19 @@ export async function getServerSideProps({
       },
     };
   }
-  const [categoriesReq, transactionsReq, balanceReq] = await Promise.all([
-    fetch(`http://localhost:3000/api/category/get`)
-      .then((res) => res.json())
-      .catch((e) => console.error(e)),
-    fetch(`http://localhost:3000/api/transaction/get?start=0&email=${email}`)
-      .then((res) => res.json())
-      .catch((e) => console.error(e)),
-    fetch(`http://localhost:3000/api/getBalance?user=${email}`)
-      .then((res) => res.json())
-      .catch((e) => console.error(e)),
-  ]);
-
+  const [categoriesReq, transactionsReq, balanceReq, username] =
+    await Promise.all([
+      fetch(`http://localhost:3000/api/category/get?user=${email}`)
+        .then((res) => res.json())
+        .catch((e) => console.error(e)),
+      fetch(`http://localhost:3000/api/transaction/get?start=0&user=${email}`)
+        .then((res) => res.json())
+        .catch((e) => console.error(e)),
+      fetch(`http://localhost:3000/api/getBalance?user=${email}`)
+        .then((res) => res.json())
+        .catch((e) => console.error(e)),
+      getUserName(email),
+    ]);
   return {
     props: {
       categories: categoriesReq.categories,

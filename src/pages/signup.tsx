@@ -1,6 +1,8 @@
 import React, { ChangeEventHandler, useState } from "react";
 import Link from "next/link";
 import "@/../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import cookie from "cookie";
+import { NextApiRequest } from "next";
 
 const Signup = () => {
   let [email, setEmail] = useState("");
@@ -87,3 +89,17 @@ const Signup = () => {
 };
 
 export default Signup;
+
+export function getServerSideProps({ req }: { req: NextApiRequest }) {
+  const browserCookie = cookie.parse(req.headers.cookie || "");
+  const email = browserCookie["email"];
+  if (email != undefined && email != "") {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  return { props: {} };
+}

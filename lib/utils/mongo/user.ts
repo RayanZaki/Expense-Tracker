@@ -29,6 +29,7 @@ export async function signUp(user: {
 
 export async function getUserId(email: string) {
   const res = await Users.findOne({ email: email });
+  console.log(res);
   return res._id;
 }
 

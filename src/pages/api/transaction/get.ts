@@ -7,8 +7,8 @@ import user from "../../../../lib/utils/mongo/Models/users";
 const Get = async (req: Request, res: Response) => {
   if (req.method == "GET") {
     try {
-      const { email, start } = req.query;
-      const userId = await getUserId(email);
+      const { user, start } = req.query;
+      const userId = await getUserId(user);
       const size = await getSize(userId);
       const transactions = await getTransactions(start, userId);
       await res.send({

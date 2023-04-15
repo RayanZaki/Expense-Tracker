@@ -3,7 +3,6 @@ import Container from "@/Components/Utils/Container";
 import Card from "@/Components/Utils/Card";
 import DashBoard from "@/Components/DashBoard/DashBoard";
 import { useRouter } from "next/router";
-import { useCookies } from "react-cookie";
 import cookie from "cookie";
 import { NextRequest } from "next/server";
 export const categoryContext = createContext({
@@ -88,7 +87,6 @@ export async function getServerSideProps({ req }: { req: NextRequest }) {
     `http://localhost:3000/api/category/get?user=${browserCookie["email"]}`
   );
   const categories = await cats.json();
-  console.log(categories);
   return {
     props: {
       categories: categories.categories,

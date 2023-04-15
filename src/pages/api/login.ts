@@ -18,10 +18,6 @@ const Login = async (req: NextRequest, res: NextResponse) => {
           "Set-Cookie",
           serialize("email", email, { path: "/" })
         );
-        await res.setHeader(
-          "Set-Cookie",
-          serialize("username", username, { path: "/" })
-        );
         await res.redirect("/");
       } else {
         await res.status(401).redirect("/login");
@@ -33,7 +29,6 @@ const Login = async (req: NextRequest, res: NextResponse) => {
   } else {
     res.status(500).redirect("/login");
   }
-  return;
 };
 
 export default Login;
