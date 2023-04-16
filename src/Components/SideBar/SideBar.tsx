@@ -45,7 +45,7 @@ const SideBar = ({
             Category
           </li>
         </Link>
-        <Link className="z-0" href="/subeser" draggable="false">
+        <Link className="z-0" href="/subuser" draggable="false">
           <li className={route === "/subuser" ? "btn btn-bg" : "btn"}>
             Sub Users
           </li>

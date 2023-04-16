@@ -29,7 +29,11 @@ const Signup = ({ subUser }: { subUser: boolean }) => {
         <div className="row">
           <div className="col-md-5 mx-auto">
             <div className="card card-body">
-              <form id="submitForm" action="/api/signup" method="POST">
+              <form
+                id="submitForm"
+                action={subUser ? "/api/subuser/add" : "/api/signup"}
+                method="POST"
+              >
                 <div className="form-group required">
                   <label htmlFor="username">Username</label>
                   <input

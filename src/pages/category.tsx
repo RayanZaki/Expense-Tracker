@@ -41,7 +41,7 @@ const Category = ({
   };
   const [emailCookie] = useCookies(["email"]);
 
-  const deleteCat = (name: string) => {
+  const deleteCat = (name: string, id: string) => {
     fetch("http://localhost:3000/api/category/delete", {
       method: "DELETE",
       body: JSON.stringify({

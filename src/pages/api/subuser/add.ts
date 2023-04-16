@@ -1,50 +1,47 @@
-import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
+import cookie, { serialize } from "cookie";
+import { NextApiRequest, NextApiResponse } from "next";
 import {
   checkIfExists,
   getUserId,
   signUp,
-} from "../../../lib/utils/mongo/user";
-import cookie, { serialize } from "cookie";
-import { createUserMetaData } from "../../../lib/utils/mongo/meta";
-import { NextApiRequest, NextApiResponse } from "next";
+} from "../../../../lib/utils/mongo/user";
+import { createUserMetaData } from "../../../../lib/utils/mongo/meta";
 
-const login = async (req: NextApiRequest, res: NextApiResponse) => {
+const Add = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "POST") {
     try {
       const body = req.body;
-      const { email, username, password } = body;
+      const { email, username, password, subUser } = body;
       if (
         email == undefined ||
         username == undefined ||
-        password == undefined
+        password == undefined ||
+        subUser == undefined
       ) {
         await res.status(400).redirect("/signup");
       }
 
       let exists: boolean = await checkIfExists(email);
       const browserCookie = cookie.parse(req.headers.cookie || "");
+      const parentEmail = browserCookie["email"];
+      console.log("here\n\n\n\n");
       if (!exists) {
         const newUser = await signUp({
           email: email,
           username: username,
           password: password,
-          subUser: false,
-          parentUser: "",
+          subUser: true,
+          parentUser: await getUserId(parentEmail),
         });
         await createUserMetaData(await getUserId(email));
-        await res.setHeader(
-          "Set-Cookie",
-          serialize("email", email, { path: "/" })
-        );
-
-        await res.status(302).redirect("/");
+        await res.status(302).redirect("/subuser");
       } else {
-        await res.redirect("/signup");
+        await res.status(400).redirect("/subuser");
       }
     } catch (e) {
       console.log(e);
       res.status(400).send({ message: e, success: false });
-      await res.status(400).redirect("/signup");
+      await res.status(400).redirect("/subuser");
     }
   } else {
     res.status(403).send({ message: "Bad method", success: false });
@@ -53,4 +50,4 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
   return;
 };
 
-export default login;
+export default Add;
