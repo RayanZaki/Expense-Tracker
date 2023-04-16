@@ -1,6 +1,5 @@
 import { Schema, model, models, Model } from "mongoose";
 import { ObjectId } from "mongodb";
-import { bool } from "prop-types";
 
 let user: Model<any>;
 const userSchema = new Schema({

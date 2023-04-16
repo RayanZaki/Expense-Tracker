@@ -45,6 +45,11 @@ const SideBar = ({
             Category
           </li>
         </Link>
+        <Link className="z-0" href="/subeser" draggable="false">
+          <li className={route === "/subuser" ? "btn btn-bg" : "btn"}>
+            Sub Users
+          </li>
+        </Link>
         {addTransaction && (
           <button onClick={toggleModal}>
             <li className={show ? "btn btn-bg" : "btn"}>Add Transaction</li>

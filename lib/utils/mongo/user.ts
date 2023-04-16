@@ -60,3 +60,18 @@ export async function getSubUsers(email: string) {
     parentUser: await getUserId(email),
   });
 }
+
+export async function deleteSubUser(id: string) {
+  return Users.deleteOne({
+    _id: id,
+  });
+}
+
+export async function editSubUser(id: string, newUserName: string) {
+  return Users.updateOne(
+    {
+      _id: id,
+    },
+    { username: newUserName }
+  );
+}

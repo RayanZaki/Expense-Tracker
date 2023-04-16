@@ -3,6 +3,7 @@ import Container from "@/Components/Utils/Container";
 import { NextApiRequest } from "next";
 import cookie from "cookie";
 import {
+  deleteSubUser,
   getSubUsers,
   getUserName,
   isSubUser,
@@ -10,6 +11,7 @@ import {
 import SideBar from "@/Components/SideBar/SideBar";
 import Card from "@/Components/Utils/Card";
 import User from "@/Interfaces/User";
+import { useRouter } from "next/router";
 
 const SubUser = ({
   username,
@@ -21,6 +23,29 @@ const SubUser = ({
   subUsers: string;
 }) => {
   let subUsersArray: Array<User> = JSON.parse(subUsers);
+  const router = useRouter();
+  const onDelete = (name: string, id: string) => {
+    fetch("http://localhost:3000/api/subuser/delete", {
+      method: "DELETE",
+      body: JSON.stringify({
+        id: id,
+      }),
+    })
+      .then(() => router.reload())
+      .catch((e) => console.log(e));
+  };
+
+  const onEdit = (username: string, id: string) => {
+    fetch("http://localhost:3000/api/subuser/edit", {
+      method: "POST",
+      body: JSON.stringify({
+        id: id,
+        NewUserName: username,
+      }),
+    })
+      .then(() => router.reload())
+      .catch((e) => console.log(e));
+  };
   return (
     <>
       <SideBar userName={username} subUser={subUser} />
@@ -29,7 +54,13 @@ const SubUser = ({
           <Container title={"Sub users"}>
             <div className="flex flex-row flex-wrap gap-10 m-5 justify-center">
               {subUsersArray.map((user) => (
-                <Card key={user._id} cardName={user.username} />
+                <Card
+                  id={user._id}
+                  key={user._id}
+                  cardName={user.username}
+                  onDelete={onDelete}
+                  onEdit={onEdit}
+                />
               ))}
             </div>
           </Container>

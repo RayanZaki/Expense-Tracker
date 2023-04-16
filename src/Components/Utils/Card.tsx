@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import CardProps from "@/Interfaces/CardProps";
 
-const Card = ({ cardName, onDelete, onEdit }: CardProps) => {
+const Card = ({ id, cardName, onDelete, onEdit }: CardProps) => {
   let [name, setName] = useState(cardName);
   let [modifying, setModifying] = useState(false);
   const modifyHandler = (event) => {
@@ -43,14 +43,14 @@ const Card = ({ cardName, onDelete, onEdit }: CardProps) => {
               } else if (name == cardName) {
                 return;
               } else {
-                onEdit(cardName, name);
+                onEdit(name, id);
               }
             }
           }}
         >
           Edit
         </button>
-        <button className="btn btn-red w-28" onClick={() => onDelete(name)}>
+        <button className="btn btn-red w-28" onClick={() => onDelete(name, id)}>
           Delete
         </button>
       </div>
