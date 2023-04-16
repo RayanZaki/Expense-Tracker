@@ -1,7 +1,8 @@
 import { editCategory } from "../../../../lib/utils/mongo/categories";
 import { getUserId } from "../../../../lib/utils/mongo/user";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const Update = async (req: Request, res: Response) => {
+const Update = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
       const body = req.body;

@@ -2,15 +2,17 @@ import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
 import { getTransactions } from "../../../../lib/utils/mongo/transaction";
 import { getSize } from "../../../../lib/utils/mongo/meta";
 import { getUserId } from "../../../../lib/utils/mongo/user";
-import user from "../../../../lib/utils/mongo/Models/users";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const Get = async (req: Request, res: Response) => {
+const Get = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "GET") {
     try {
       const { user, start } = req.query;
-      const userId = await getUserId(user);
+      if (user == undefined || status == undefined)
+        throw Error("missing parameters");
+      const userId = await getUserId(user as string);
       const size = await getSize(userId);
-      const transactions = await getTransactions(start, userId);
+      const transactions = await getTransactions(Number(start), userId);
       await res.send({
         success: true,
         transactions: transactions,

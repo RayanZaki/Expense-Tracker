@@ -1,8 +1,8 @@
-import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
 import { addCategory } from "../../../../lib/utils/mongo/categories";
 import { getUserId } from "../../../../lib/utils/mongo/user";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const Add = async (req: Request, res: Response) => {
+const Add = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
       // @ts-ignore

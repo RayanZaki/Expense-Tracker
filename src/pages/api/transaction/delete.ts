@@ -1,10 +1,9 @@
-import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
 import { deleteTransaction } from "../../../../lib/utils/mongo/transaction";
-import Error from "next/error";
 import { MongoInvalidArgumentError } from "mongodb";
 import { getUserId } from "../../../../lib/utils/mongo/user";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const Delete = async (req: Request, res: Response) => {
+const Delete = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "DELETE") {
     try {
       const body: string = req.body;

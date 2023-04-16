@@ -9,10 +9,12 @@ const Login = () => {
   let [password, setPassword] = useState("");
 
   const handleEmail: ChangeEventHandler = (event) => {
+    // @ts-ignore
     setEmail(event.target.value);
   };
 
   const handlePassword: ChangeEventHandler = (event) => {
+    // @ts-ignore
     setPassword(event.target.value);
   };
   return (

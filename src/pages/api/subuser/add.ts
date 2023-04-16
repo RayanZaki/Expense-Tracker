@@ -1,4 +1,4 @@
-import cookie, { serialize } from "cookie";
+import cookie from "cookie";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   checkIfExists,

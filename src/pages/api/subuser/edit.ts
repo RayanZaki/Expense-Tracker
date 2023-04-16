@@ -5,8 +5,9 @@ import {
   editSubUser,
   getUserId,
 } from "../../../../lib/utils/mongo/user";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const Delete = async (req: Request, res: Response) => {
+const Delete = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
       const body: string = req.body;

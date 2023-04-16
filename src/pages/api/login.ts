@@ -1,8 +1,7 @@
-import { getUserId, getUserName, login } from "../../../lib/utils/mongo/user";
-import { NextRequest, NextResponse } from "next/server";
+import { getUserName, login } from "../../../lib/utils/mongo/user";
 import { serialize } from "cookie";
-import cookie from "cookie";
-const Login = async (req: NextRequest, res: NextResponse) => {
+import { NextApiRequest, NextApiResponse } from "next";
+const Login = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "POST") {
     try {
       const body = req.body;

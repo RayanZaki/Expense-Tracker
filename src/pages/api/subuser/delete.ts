@@ -1,8 +1,7 @@
-import { deleteCategory } from "../../../../lib/utils/mongo/categories";
-import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
-import { deleteSubUser, getUserId } from "../../../../lib/utils/mongo/user";
+import { deleteSubUser } from "../../../../lib/utils/mongo/user";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const Delete = async (req: Request, res: Response) => {
+const Delete = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "DELETE") {
     try {
       const body: string = req.body;

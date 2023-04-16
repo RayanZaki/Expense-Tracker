@@ -1,13 +1,13 @@
-import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
 import { getSalary } from "../../../lib/utils/mongo/meta";
-import { NextRequest, NextResponse } from "next/server";
 import { getUserId } from "../../../lib/utils/mongo/user";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const GetBalance = async (req: NextRequest, res: NextResponse) => {
+const GetBalance = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "GET") {
     try {
       const { user } = req.query;
-      const balance = await getSalary(await getUserId(user));
+      if (user == undefined) throw Error("missing parameters");
+      const balance = await getSalary(await getUserId(user as string));
       await res.send({
         success: true,
         balance: balance,
