@@ -1,7 +1,8 @@
 import meta from "./Models/MetaData";
 import MetaData from "./Models/MetaData";
-import { getUserId, isSubUserById } from "./user";
+import { getParentByID, getUserId, isSubUserById } from "./user";
 import Users from "./Models/users";
+import { number } from "prop-types";
 
 export async function updateSalary(
   expense: boolean,
@@ -11,20 +12,28 @@ export async function updateSalary(
   const metadata = await meta.findOne({ user: user });
   const currentSalary: number = metadata.totalBalance as number;
   let newSalary: number = expense
-    ? currentSalary - amount
-    : currentSalary + amount;
+    ? Number(currentSalary) - Number(amount)
+    : Number(currentSalary) + Number(amount);
 
   if (await isSubUserById(user)) {
-    const currentGlobalSalary: number = metadata.globalBalance as number;
+    const parentUser: string = await getParentByID(user);
+    const parentMeta = await meta.findOne({ user: parentUser });
+    const currentGlobalSalary: number = parentMeta.globalBalance as number;
     let newBalance: number = expense
-      ? currentGlobalSalary - amount
-      : currentGlobalSalary + amount;
-    return meta.updateOne(
-      { _id: metadata._id },
-      { totalBalance: newSalary, globalBalance: newBalance }
-    );
+      ? Number(currentGlobalSalary) - Number(amount)
+      : Number(currentGlobalSalary) + Number(amount);
+    await meta.updateOne({ _id: metadata._id }, { totalBalance: newSalary });
+    await parentMeta.updateOne({ globalBalance: newBalance });
+    return;
   }
-  return meta.updateOne({ _id: metadata._id }, { totalBalance: newSalary });
+  const currentGlobalSalary: number = metadata.globalBalance as number;
+  let newBalance: number = expense
+    ? Number(currentGlobalSalary) - Number(amount)
+    : Number(currentGlobalSalary) + Number(amount);
+  return meta.updateOne(
+    { _id: metadata._id },
+    { totalBalance: newSalary, globalBalance: newBalance }
+  );
 }
 
 export async function getSalary(user: string) {

@@ -44,6 +44,11 @@ export async function getUserId(email: string) {
   return res._id;
 }
 
+export async function getParentByID(id: string) {
+  const res = await Users.findById(id);
+  return res.parentUser;
+}
+
 export async function getUserName(email: string) {
   const res = await Users.findOne({ email: email }).select("username");
   return res ? res.username : null;
