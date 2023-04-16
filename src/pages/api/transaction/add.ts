@@ -1,9 +1,9 @@
-import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
 import { addTransaction } from "../../../../lib/utils/mongo/transaction";
 import cookie from "cookie";
 import { getUserId } from "../../../../lib/utils/mongo/user";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const Get = async (req: Request, res: Response) => {
+const Get = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "POST") {
     try {
       const browserCookie = cookie.parse(
@@ -13,7 +13,6 @@ const Get = async (req: Request, res: Response) => {
       const body: string = req.body;
       let { transaction } = JSON.parse(body);
       transaction.owner = await getUserId(browserCookie["email"]);
-      console.log(await getUserId(browserCookie["email"]));
       await addTransaction(transaction);
       res.send({
         success: true,

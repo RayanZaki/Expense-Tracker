@@ -31,7 +31,7 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
           subUser: false,
           parentUser: "",
         });
-        await createUserMetaData(await getUserId(email));
+        await createUserMetaData(email);
         await res.setHeader(
           "Set-Cookie",
           serialize("email", email, { path: "/" })

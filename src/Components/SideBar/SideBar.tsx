@@ -9,11 +9,9 @@ import { useCookies } from "react-cookie";
 const SideBar = ({
   userName,
   subUser,
-  addTransaction = false,
 }: {
   userName: String;
   subUser: boolean;
-  addTransaction?: boolean;
 }) => {
   let { show, toggleModal }: { show: boolean; toggleModal: MouseEventHandler } =
     useContext(ModalContext);
@@ -45,19 +43,23 @@ const SideBar = ({
             Category
           </li>
         </Link>
-        <Link className="z-0" href="/subuser" draggable="false">
-          <li className={route === "/subuser" ? "btn btn-bg" : "btn"}>
-            Sub Users
-          </li>
-        </Link>
-        {addTransaction && (
+        {!subUser && (
+          <Link className="z-0" href="/subuser" draggable="false">
+            <li className={route === "/subuser" ? "btn btn-bg" : "btn"}>
+              Sub Users
+            </li>
+          </Link>
+        )}
+        {route == "/" && (
           <button onClick={toggleModal}>
-            <li className={show ? "btn btn-bg" : "btn"}>Add Transaction</li>
+            <li className={show ? "btn btn-bg" : "btn bg-primary"}>
+              Add Transaction
+            </li>
           </button>
         )}
-        {!subUser && (
+        {!subUser && route == "/subuser" && (
           <Link href={`/signup?user=${cookie.email}`}>
-            <li className={show ? "btn btn-bg" : "btn"}>Add Sub User</li>
+            <li className={"btn bg-primary"}>Add Sub User</li>
           </Link>
         )}
       </ul>

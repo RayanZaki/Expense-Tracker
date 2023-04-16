@@ -53,7 +53,7 @@ const Home = ({
   }, [currentPos]);
   return (
     <indexContext.Provider value={{ provided: true, props: categories }}>
-      <DashBoard userName={userName} subUser={subUser} addTransaction>
+      <DashBoard userName={userName} subUser={subUser}>
         <div className="body">
           <div className="active">
             <Container

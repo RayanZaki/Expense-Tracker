@@ -33,7 +33,7 @@ const Add = async (req: NextApiRequest, res: NextApiResponse) => {
           subUser: true,
           parentUser: await getUserId(parentEmail),
         });
-        await createUserMetaData(await getUserId(email));
+        await createUserMetaData(email);
         await res.status(302).redirect("/subuser");
       } else {
         await res.status(400).redirect("/subuser");

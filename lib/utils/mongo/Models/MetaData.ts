@@ -1,5 +1,6 @@
 import { Schema, model, models, Model } from "mongoose";
 import { Long, ObjectId } from "mongodb";
+import { bool, number } from "prop-types";
 
 let meta: Model<any>;
 const metaDataSchema = new Schema({
@@ -11,6 +12,9 @@ const metaDataSchema = new Schema({
     required: true,
   },
   totalBalance: {
+    type: Number,
+  },
+  globalBalance: {
     type: Number,
   },
 });

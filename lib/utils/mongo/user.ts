@@ -54,6 +54,11 @@ export async function isSubUser(email: string) {
   return res.subUser;
 }
 
+export async function isSubUserById(id: string) {
+  const res = await Users.findById(id);
+  return res.subUser;
+}
+
 export async function getSubUsers(email: string) {
   return Users.find({
     subUser: true,

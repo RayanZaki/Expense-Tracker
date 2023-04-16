@@ -20,12 +20,10 @@ const DashBoard = ({
   userName,
   children,
   subUser,
-  addTransaction = false,
 }: {
   userName: string;
   subUser: boolean;
   children: ReactComponentElement<any>;
-  addTransaction?: boolean;
 }) => {
   let [show, setShow] = useState(false);
   const toggleModal = () => {
@@ -42,11 +40,7 @@ const DashBoard = ({
         </Container>
       </Modal>
       <ModalContext.Provider value={{ show, toggleModal }}>
-        <SideBar
-          userName={userName}
-          subUser={subUser}
-          addTransaction={addTransaction}
-        />
+        <SideBar userName={userName} subUser={subUser} />
         {children}
       </ModalContext.Provider>
     </>
