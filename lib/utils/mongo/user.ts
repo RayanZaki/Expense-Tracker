@@ -18,12 +18,24 @@ export async function signUp(user: {
   email: string;
   password: string;
   username: string;
+  subUser: boolean;
+  parentUser: string | null;
 }) {
-  const newUser = new Users({
-    email: user.email,
-    password: user.password,
-    username: user.username,
-  });
+  console.log(user.subUser);
+  const newUser = user.subUser
+    ? new Users({
+        email: user.email,
+        password: user.password,
+        username: user.username,
+        subUser: user.subUser,
+        parentUser: user.parentUser,
+      })
+    : new Users({
+        email: user.email,
+        password: user.password,
+        username: user.username,
+        subUser: user.subUser,
+      });
   return newUser.save();
 }
 
@@ -35,5 +47,10 @@ export async function getUserId(email: string) {
 
 export async function getUserName(email: string) {
   const res = await Users.findOne({ email: email }).select("username");
-  return res.username;
+  return res ? res.username : null;
+}
+
+export async function isSubUser(email: string) {
+  const res = await Users.findOne({ email: email });
+  return res.subUser;
 }

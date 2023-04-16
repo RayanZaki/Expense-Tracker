@@ -19,9 +19,11 @@ export const ModalContext: Context<any> = createContext({
 const DashBoard = ({
   userName,
   children,
+  subUser,
 }: {
   userName: string;
   children: ReactComponentElement<any>;
+  subUser: boolean;
 }) => {
   let [show, setShow] = useState(false);
   const toggleModal = () => {
@@ -38,7 +40,7 @@ const DashBoard = ({
         </Container>
       </Modal>
       <ModalContext.Provider value={{ show, toggleModal }}>
-        <SideBar userName={userName} />
+        <SideBar userName={userName} subUser={subUser} />
         {children}
       </ModalContext.Provider>
     </>

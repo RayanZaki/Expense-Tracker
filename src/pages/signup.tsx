@@ -3,8 +3,10 @@ import Link from "next/link";
 import "@/../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import cookie from "cookie";
 import { NextApiRequest } from "next";
+import Router from "next/router";
+import { NextApiRequestQuery } from "next/dist/server/api-utils";
 
-const Signup = () => {
+const Signup = ({ subUser }: { subUser: boolean }) => {
   let [email, setEmail] = useState("");
   let [username, setUserName] = useState("");
   let [password, setPassword] = useState("");
@@ -22,7 +24,7 @@ const Signup = () => {
 
   return (
     <div className={"pt-5"}>
-      <h1 className="text-center">Sign Up</h1>
+      <h1 className="text-center">{subUser ? "Add Sub User" : "Sign Up"}</h1>
       <div className="container">
         <div className="row">
           <div className="col-md-5 mx-auto">
@@ -69,6 +71,13 @@ const Signup = () => {
                     onChange={handlePassword}
                   />
                 </div>
+                <input
+                  type={"radio"}
+                  className={"invisible"}
+                  name={"subUser"}
+                  value={1}
+                  checked={subUser}
+                />
                 <div className="form-group mt-4 mb-4"></div>
                 <div className="form-group pt-1">
                   <button className="btn btn-primary btn-block" type="submit">
@@ -76,10 +85,12 @@ const Signup = () => {
                   </button>
                 </div>
               </form>
-              <p className="small-xl pt-3 text-center">
-                <span className="text-muted">Already a member?</span>
-                <Link href="/login">Log in</Link>
-              </p>
+              {!subUser && (
+                <p className="small-xl pt-3 text-center">
+                  <span className="text-muted">Already a member?</span>
+                  <Link href="/login">Log in</Link>
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -90,10 +101,20 @@ const Signup = () => {
 
 export default Signup;
 
-export function getServerSideProps({ req }: { req: NextApiRequest }) {
+export function getServerSideProps({
+  req,
+  query,
+}: {
+  req: NextApiRequest;
+  query: NextApiRequestQuery;
+}) {
   const browserCookie = cookie.parse(req.headers.cookie || "");
   const email = browserCookie["email"];
   if (email != undefined && email != "") {
+    const { user } = query;
+    if (user == email) {
+      return { props: { subUser: true } };
+    }
     return {
       redirect: {
         destination: "/",
@@ -101,5 +122,5 @@ export function getServerSideProps({ req }: { req: NextApiRequest }) {
       },
     };
   }
-  return { props: {} };
+  return { props: { subUser: false } };
 }

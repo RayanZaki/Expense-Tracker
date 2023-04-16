@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import cookie from "cookie";
 import { useCookies } from "react-cookie";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getUserName } from "../../lib/utils/mongo/user";
+import { getUserName, isSubUser } from "../../lib/utils/mongo/user";
 
 export const indexContext = createContext({
   provided: false,
@@ -20,12 +20,14 @@ const Home = ({
   balance,
   size,
   userName,
+  subUser,
 }: {
   categories: Array<{ _id: string; name: string }>;
   transactions: Array<transaction>;
   balance: number;
   size: number;
   userName: string;
+  subUser: boolean;
 }) => {
   const router = useRouter();
   const [emailCookie] = useCookies(["email"]);
@@ -51,7 +53,7 @@ const Home = ({
   }, [currentPos]);
   return (
     <indexContext.Provider value={{ provided: true, props: categories }}>
-      <DashBoard userName={userName}>
+      <DashBoard userName={userName} subUser={subUser}>
         <div className="body">
           <div className="active">
             <Container
@@ -100,7 +102,7 @@ export async function getServerSideProps({
       },
     };
   }
-  const [categoriesReq, transactionsReq, balanceReq, username] =
+  const [categoriesReq, transactionsReq, balanceReq, username, subUser] =
     await Promise.all([
       fetch(`http://localhost:3000/api/category/get?user=${email}`)
         .then((res) => res.json())
@@ -112,6 +114,7 @@ export async function getServerSideProps({
         .then((res) => res.json())
         .catch((e) => console.error(e)),
       getUserName(email),
+      isSubUser(email),
     ]);
   return {
     props: {
@@ -120,6 +123,7 @@ export async function getServerSideProps({
       size: transactionsReq.size,
       balance: balanceReq.balance,
       userName: username,
+      subUser: subUser,
     },
   };
 }

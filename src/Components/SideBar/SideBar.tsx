@@ -5,10 +5,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { ModalContext } from "@/Components/DashBoard/DashBoard";
 import Router from "next/router";
-const SideBar = ({ userName }: { userName: String }) => {
+import { useCookies } from "react-cookie";
+const SideBar = ({
+  userName,
+  subUser,
+}: {
+  userName: String;
+  subUser: boolean;
+}) => {
   let { show, toggleModal }: { show: boolean; toggleModal: MouseEventHandler } =
     useContext(ModalContext);
   let route = useRouter().route;
+  const [cookie] = useCookies(["email"]);
   const logout = () => {
     fetch("http://localhost:3000/api/logout")
       .then(() => Router.push("/login"))
@@ -38,6 +46,11 @@ const SideBar = ({ userName }: { userName: String }) => {
         <button onClick={toggleModal}>
           <li className={show ? "btn btn-bg" : "btn"}>Add Transaction</li>
         </button>
+        {!subUser && (
+          <Link href={`/signup?user=${cookie.email}`}>
+            <li className={show ? "btn btn-bg" : "btn"}>Add Sub User</li>
+          </Link>
+        )}
       </ul>
       <button className={"btn"} onClick={logout}>
         Logout

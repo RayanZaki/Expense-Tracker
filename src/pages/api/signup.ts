@@ -4,29 +4,35 @@ import {
   getUserId,
   signUp,
 } from "../../../lib/utils/mongo/user";
-import { serialize } from "cookie";
+import cookie, { serialize } from "cookie";
 import { createUserMetaData } from "../../../lib/utils/mongo/meta";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const login = async (req: Request, res: Response) => {
+const login = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "POST") {
     try {
       const body = req.body;
-      const { email, username, password } = body;
+      const { email, username, password, subUser } = body;
+      console.log(email, username, password, subUser);
       if (
         email == undefined ||
         username == undefined ||
-        password == undefined
+        password == undefined ||
+        subUser == undefined
       ) {
-        await res.redirect("/signup");
+        await res.status(400).redirect("/signup");
       }
 
       let exists: boolean = await checkIfExists(email);
-
+      const browserCookie = cookie.parse(req.headers.cookie || "");
+      const parentEmail = browserCookie["email"];
       if (!exists) {
         const newUser = await signUp({
           email: email,
           username: username,
           password: password,
+          subUser: subUser == "1",
+          parentUser: subUser ? await getUserId(parentEmail) : "",
         });
         await createUserMetaData(await getUserId(email));
         await res.setHeader(
