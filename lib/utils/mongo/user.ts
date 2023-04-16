@@ -41,7 +41,6 @@ export async function signUp(user: {
 
 export async function getUserId(email: string) {
   const res = await Users.findOne({ email: email });
-  console.log(res);
   return res._id;
 }
 
@@ -53,4 +52,11 @@ export async function getUserName(email: string) {
 export async function isSubUser(email: string) {
   const res = await Users.findOne({ email: email });
   return res.subUser;
+}
+
+export async function getSubUsers(email: string) {
+  return Users.find({
+    subUser: true,
+    parentUser: await getUserId(email),
+  });
 }

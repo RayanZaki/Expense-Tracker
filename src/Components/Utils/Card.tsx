@@ -1,55 +1,14 @@
 import React, { useRef, useState } from "react";
 import CardProps from "@/Interfaces/CardProps";
-import { useRouter } from "next/router";
-import { useCookies } from "react-cookie";
 
-const Card = ({ category }: CardProps) => {
-  let [name, setName] = useState(category);
+const Card = ({ cardName, onDelete, onEdit }: CardProps) => {
+  let [name, setName] = useState(cardName);
   let [modifying, setModifying] = useState(false);
   const modifyHandler = (event) => {
     setName(event.target.value);
   };
   const title = useRef(null);
-  const router = useRouter();
-  const [emailCookie] = useCookies("email");
-  const deleteCat = (name: string) => {
-    fetch("http://localhost:3000/api/category/delete", {
-      method: "DELETE",
-      body: JSON.stringify({
-        category: name,
-        user: emailCookie.email,
-      }),
-    }).catch((e) => console.log("error: ", e));
-    router.reload();
-  };
-  const editCat = (name: string) => {
-    setModifying(!modifying);
-    if (!modifying) return;
-    else {
-      if (name == "") {
-        setName(category);
-        // setError(true);
-      } else if (name == category) {
-        return;
-      } else {
-        try {
-          fetch(`http://localhost:3000/api/category/edit`, {
-            method: "POST",
-            body: JSON.stringify({
-              oldName: category,
-              newName: name,
-              user: emailCookie.email,
-            }),
-          })
-            .then((value) => console.log(value))
-            .catch((reason) => console.log(reason));
-        } catch (e) {
-          console.log(e);
-        }
-        router.reload();
-      }
-    }
-  };
+
   // @ts-ignore
   return (
     <div className="flex flex-col gap-5 p-5 w-80 leaf bg-background shadow-2xl">
@@ -74,11 +33,24 @@ const Card = ({ category }: CardProps) => {
               ? "btn btn-green w-28 text-white bg-green-500"
               : "btn btn-green w-28"
           }
-          onClick={() => editCat(name)}
+          onClick={() => {
+            setModifying(!modifying);
+            if (!modifying) return;
+            else {
+              if (name == "") {
+                setName(cardName);
+                // setError(true);
+              } else if (name == cardName) {
+                return;
+              } else {
+                onEdit(cardName, name);
+              }
+            }
+          }}
         >
           Edit
         </button>
-        <button className="btn btn-red w-28" onClick={() => deleteCat(name)}>
+        <button className="btn btn-red w-28" onClick={() => onDelete(name)}>
           Delete
         </button>
       </div>

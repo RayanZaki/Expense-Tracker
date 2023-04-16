@@ -4,7 +4,9 @@ import Card from "@/Components/Utils/Card";
 import DashBoard from "@/Components/DashBoard/DashBoard";
 import { useRouter } from "next/router";
 import cookie from "cookie";
-import { NextRequest } from "next/server";
+import { getUserName, isSubUser } from "../../lib/utils/mongo/user";
+import { NextApiRequest } from "next";
+import { useCookies } from "react-cookie";
 export const categoryContext = createContext({
   provided: false,
   props: {},
@@ -13,10 +15,12 @@ const Category = ({
   categories,
   email,
   userName,
+  subUser,
 }: {
   categories: Array<{ _id: string; name: string }>;
   email: string;
   userName: string;
+  subUser: boolean;
 }) => {
   const router = useRouter();
   let [input, changeInput] = useState("");
@@ -35,9 +39,39 @@ const Category = ({
       .then(() => router.reload())
       .catch((reason) => console.log(reason));
   };
+  const [emailCookie] = useCookies(["email"]);
+
+  const deleteCat = (name: string) => {
+    fetch("http://localhost:3000/api/category/delete", {
+      method: "DELETE",
+      body: JSON.stringify({
+        category: name,
+        user: emailCookie.email,
+      }),
+    })
+      .then(() => router.reload())
+      .catch((e) => console.log("error: ", e));
+  };
+
+  const editCat = (cardName: string, name: string) => {
+    try {
+      fetch(`http://localhost:3000/api/category/edit`, {
+        method: "POST",
+        body: JSON.stringify({
+          oldName: cardName,
+          newName: name,
+          user: emailCookie.email,
+        }),
+      })
+        .then((value) => router.reload())
+        .catch((reason) => console.log(reason));
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <categoryContext.Provider value={{ provided: true, props: categories }}>
-      <DashBoard userName={userName}>
+      <DashBoard userName={userName} subUser={subUser}>
         <div className="body">
           <div className="active">
             <Container title="Add Category: ">
@@ -66,7 +100,12 @@ const Category = ({
             <Container title="All categories">
               <div className="flex flex-row flex-wrap gap-10 m-5 justify-center">
                 {categories.map((cat) => (
-                  <Card key={cat._id} category={cat.name} />
+                  <Card
+                    key={cat._id}
+                    cardName={cat.name}
+                    onDelete={deleteCat}
+                    onEdit={editCat}
+                  />
                 ))}
               </div>
             </Container>
@@ -79,19 +118,26 @@ const Category = ({
 
 export default Category;
 
-export async function getServerSideProps({ req }: { req: NextRequest }) {
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
   const browserCookie = cookie.parse(
     req ? req.headers.cookie || "" : document.cookie
   );
-  const cats = await fetch(
-    `http://localhost:3000/api/category/get?user=${browserCookie["email"]}`
-  );
-  const categories = await cats.json();
+
+  const email = browserCookie["email"];
+  const [categories, username, subUser] = await Promise.all([
+    fetch(`http://localhost:3000/api/category/get?user=${email}`).then((res) =>
+      res.json()
+    ),
+    getUserName(email),
+    isSubUser(email),
+  ]);
+
   return {
     props: {
       categories: categories.categories,
       email: browserCookie["email"],
-      userName: browserCookie["username"],
+      userName: username,
+      subUser: subUser,
     },
   };
 }
