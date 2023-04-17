@@ -1,8 +1,6 @@
 import meta from "./Models/MetaData";
 import MetaData from "./Models/MetaData";
 import { getParentByID, getUserId, isSubUser, isSubUserById } from "./user";
-import Users from "./Models/users";
-import { number } from "prop-types";
 
 export async function updateSalary(
   expense: boolean,

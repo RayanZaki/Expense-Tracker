@@ -7,7 +7,6 @@ import {
   getUserName,
   isSubUser,
 } from "../../lib/utils/mongo/user";
-import SideBar from "@/Components/SideBar/SideBar";
 import Card from "@/Components/Utils/Card";
 import User from "@/Interfaces/User";
 import { useRouter } from "next/router";
