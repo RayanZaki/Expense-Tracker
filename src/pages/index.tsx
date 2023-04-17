@@ -2,7 +2,7 @@ import DashBoard from "@/Components/DashBoard/DashBoard";
 import Container from "@/Components/Utils/Container";
 import Paging from "@/Components/Utils/Paging";
 import TransactionList from "@/Components/Transaction/TransactionList";
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { transaction } from "@/Interfaces/TransactionProps";
 import { useRouter } from "next/router";
 import cookie from "cookie";
@@ -88,7 +88,6 @@ export default Home;
 
 export async function getServerSideProps({
   req,
-  res,
 }: {
   req: NextApiRequest;
   res: NextApiResponse;
