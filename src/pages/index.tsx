@@ -116,6 +116,7 @@ export async function getServerSideProps({
       getUserName(email),
       isSubUser(email),
     ]);
+  console.log(transactionsReq);
   return {
     props: {
       categories: categoriesReq.categories,

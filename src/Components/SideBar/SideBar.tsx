@@ -13,8 +13,17 @@ const SideBar = ({
   userName: String;
   subUser: boolean;
 }) => {
-  let { show, toggleModal }: { show: boolean; toggleModal: MouseEventHandler } =
-    useContext(ModalContext);
+  let {
+    show,
+    toggleTransactionModal,
+    showTransfer,
+    toggleTransferModal,
+  }: {
+    show: boolean;
+    toggleTransactionModal: MouseEventHandler;
+    showTransfer: boolean;
+    toggleTransferModal: MouseEventHandler;
+  } = useContext(ModalContext);
   let route = useRouter().route;
   const [cookie] = useCookies(["email"]);
   const logout = () => {
@@ -51,7 +60,7 @@ const SideBar = ({
           </Link>
         )}
         {route == "/" && (
-          <button onClick={toggleModal}>
+          <button onClick={toggleTransactionModal}>
             <li className={show ? "btn btn-bg" : "btn bg-primary"}>
               Add Transaction
             </li>
@@ -61,6 +70,13 @@ const SideBar = ({
           <Link href={`/signup?user=${cookie.email}`}>
             <li className={"btn bg-primary"}>Add Sub User</li>
           </Link>
+        )}
+        {subUser && (
+          <button onClick={toggleTransferModal}>
+            <li className={showTransfer ? "btn btn-bg" : "btn bg-primary"}>
+              Transfer Funds
+            </li>
+          </button>
         )}
       </ul>
       <button className={"btn"} onClick={logout}>

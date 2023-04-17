@@ -9,11 +9,12 @@ import SideBar from "@/Components/SideBar/SideBar";
 import Container from "@/Components/Utils/Container";
 import TransactionForm from "@/Components/Transaction/TransactionForm";
 import { bool } from "prop-types";
+import TransferForm from "@/Components/Utils/transferForm";
 
 // Context for changing the visibility of the modal
 export const ModalContext: Context<any> = createContext({
   show: bool,
-  toggleModal: Function,
+  toggleTransactionModal: Function,
 });
 
 const DashBoard = ({
@@ -26,20 +27,38 @@ const DashBoard = ({
   children: ReactComponentElement<any>;
 }) => {
   let [show, setShow] = useState(false);
-  const toggleModal = () => {
+  let [showTransfer, setShowTransfer] = useState(false);
+
+  const toggleTransactionModal = () => {
     setShow(!show);
+  };
+  const toggleTransferModal = () => {
+    setShowTransfer(!showTransfer);
   };
 
   const addTransactionTitle = "Add Transaction";
+  const addTransferTitle = "Make Transfer";
 
   return (
     <>
-      <Modal show={show} onHide={toggleModal}>
+      <Modal show={show} onHide={toggleTransactionModal}>
         <Container title={addTransactionTitle}>
           <TransactionForm />
         </Container>
       </Modal>
-      <ModalContext.Provider value={{ show, toggleModal }}>
+      <Modal show={showTransfer} onHide={toggleTransferModal}>
+        <Container title={addTransferTitle}>
+          <TransferForm />
+        </Container>
+      </Modal>
+      <ModalContext.Provider
+        value={{
+          show,
+          toggleTransactionModal,
+          showTransfer,
+          toggleTransferModal,
+        }}
+      >
         <SideBar userName={userName} subUser={subUser} />
         {children}
       </ModalContext.Provider>

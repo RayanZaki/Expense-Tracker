@@ -1,6 +1,6 @@
 import meta from "./Models/MetaData";
 import MetaData from "./Models/MetaData";
-import { getParentByID, getUserId, isSubUserById } from "./user";
+import { getParentByID, getUserId, isSubUser, isSubUserById } from "./user";
 import Users from "./Models/users";
 import { number } from "prop-types";
 
@@ -84,4 +84,21 @@ export async function createUserMetaData(user: string) {
 export async function getGlobalBalance(email: string) {
   const metaData = await meta.findOne({ user: await getUserId(email) });
   return metaData.globalBalance;
+}
+
+export async function transferFunds(amount: number, email: string) {
+  try {
+    const id = await getUserId(email);
+    if (await isSubUser(email)) {
+      const metadata = await meta.findOne({ user: id });
+      if (metadata.totalBalance < amount) return false;
+      await updateSalary(true, amount, id);
+      const parentUser = await getParentByID(id);
+      await updateSalary(false, amount, parentUser);
+      return true;
+    }
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
 }

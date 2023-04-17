@@ -8,7 +8,7 @@ const Get = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "GET") {
     try {
       const { user, start } = req.query;
-      if (user == undefined || status == undefined)
+      if (user == undefined || start == undefined)
         throw Error("missing parameters");
       const userId = await getUserId(user as string);
       const size = await getSize(userId);
