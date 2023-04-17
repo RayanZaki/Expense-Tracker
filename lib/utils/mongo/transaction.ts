@@ -12,7 +12,6 @@ export async function getTransactions(start: number, user: string) {
 }
 export async function addTransaction(t: transaction) {
   // increment the number of transactions
-
   const newTransaction = new Transaction({
     owner: t.owner,
     title: t.title,
@@ -39,5 +38,22 @@ export async function deleteTransaction(
     decrementCount(user),
     Transaction.deleteOne({ _id: id, owner: user }),
     updateSalary(!expense, amount, user),
+  ]);
+}
+
+export async function editTransaction(t: transaction, ownerId: string) {
+  // increment the number of transactions
+
+  const transaction = Transaction.findById(ownerId);
+
+  return Promise.all([
+    transaction.updateOne({
+      title: t.title,
+      amount: t.amount,
+      date: t.date,
+      category: t.category,
+      type: t.type,
+    }),
+    updateSalary(t.type == "Expense", t.amount as number, ownerId),
   ]);
 }

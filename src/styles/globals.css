@@ -9,7 +9,7 @@
 
 @layer components {
     .btn {
-        @apply text-center p-4  rounded-2xl rounded-xl text-xl italic hover:drop-shadow-md hover:btn-bg hover:opacity-50 hover:drop-shadow-xl
+        @apply text-center p-4  rounded-2xl  text-xl italic  hover:btn-bg hover:opacity-50 hover:drop-shadow-xl
     }
 
     .btn-bg {
