@@ -1,7 +1,7 @@
 import React, { ChangeEventHandler, useState } from "react";
 import Router from "next/router";
 
-const TransferForm = () => {
+const TransferForm = ({ receiverId }: { receiverId: string }) => {
   let [amount, setAmount] = useState("");
   let [error, setError] = useState(false);
   let [errorMessage, setErrorMessage] = useState("");
@@ -11,25 +11,22 @@ const TransferForm = () => {
   };
   const transfer = (event) => {
     event.preventDefault();
-    fetch("http://localhost:3000/api/transfer", {
+    fetch("http://localhost:3000/api/subuser/transfer", {
       method: "POST",
       body: JSON.stringify({
         amount: amount,
+        receiverId: receiverId,
       }),
     })
       .then((res) => {
-        if (res.status == 401) {
-          setError(true);
-          setErrorMessage("Amount Exceeds balance");
-          return;
-        } else if (res.status == 500) {
-          setError(true);
-          setErrorMessage("Server Error");
-          return;
-        }
         res.json().then((res) => {
-          setError(false);
-          Router.reload();
+          if (res.success) {
+            setError(false);
+            Router.reload();
+          } else {
+            setError(true);
+            setErrorMessage(res.message);
+          }
         });
       })
       .catch((e) => console.log(e));

@@ -1,9 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import CardProps from "@/Interfaces/CardProps";
+import { ModalContext } from "@/Components/DashBoard/DashBoard";
 
-const Card = ({ id, cardName, onDelete, onEdit }: CardProps) => {
+const Card = ({ id, cardName, onDelete, onEdit, transferFund }: CardProps) => {
+  const { toggleTransferModal, receiverId } = useContext(ModalContext);
   let [name, setName] = useState(cardName);
   let [modifying, setModifying] = useState(false);
+  // @ts-ignore
   const modifyHandler = (event) => {
     setName(event.target.value);
   };
@@ -54,6 +57,17 @@ const Card = ({ id, cardName, onDelete, onEdit }: CardProps) => {
           Delete
         </button>
       </div>
+      {transferFund && (
+        <button
+          className="btn btn-yellow w-58"
+          onClick={() => {
+            receiverId.current = id;
+            toggleTransferModal();
+          }}
+        >
+          Transfer Funds
+        </button>
+      )}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, {
   Context,
   createContext,
   ReactComponentElement,
+  useRef,
   useState,
 } from "react";
 import Modal from "@/Components/Utils/Modal";
@@ -21,14 +22,17 @@ const DashBoard = ({
   userName,
   children,
   subUser,
+  transferOnly,
 }: {
   userName: string;
   subUser: boolean;
+  transferOnly?: boolean;
   children: ReactComponentElement<any>;
 }) => {
   let [show, setShow] = useState(false);
   let [showTransfer, setShowTransfer] = useState(false);
-
+  // Store the Id of the user clicked on to transfer funds to
+  let receiverId = useRef("");
   const toggleTransactionModal = () => {
     setShow(!show);
   };
@@ -41,14 +45,16 @@ const DashBoard = ({
 
   return (
     <>
-      <Modal show={show} onHide={toggleTransactionModal}>
-        <Container title={addTransactionTitle}>
-          <TransactionForm />
-        </Container>
-      </Modal>
+      {!transferOnly && (
+        <Modal show={show} onHide={toggleTransactionModal}>
+          <Container title={addTransactionTitle}>
+            <TransactionForm />
+          </Container>
+        </Modal>
+      )}
       <Modal show={showTransfer} onHide={toggleTransferModal}>
         <Container title={addTransferTitle}>
-          <TransferForm />
+          <TransferForm receiverId={receiverId.current} />
         </Container>
       </Modal>
       <ModalContext.Provider
@@ -57,6 +63,7 @@ const DashBoard = ({
           toggleTransactionModal,
           showTransfer,
           toggleTransferModal,
+          receiverId,
         }}
       >
         <SideBar userName={userName} subUser={subUser} />

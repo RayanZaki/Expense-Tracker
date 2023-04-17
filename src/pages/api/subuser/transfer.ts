@@ -1,6 +1,6 @@
 import cookie from "cookie";
 import { NextApiRequest, NextApiResponse } from "next";
-import { transferFunds } from "../../../lib/utils/mongo/meta";
+import { transferFunds } from "../../../../lib/utils/mongo/meta";
 
 const Transfer = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "POST") {
@@ -11,12 +11,15 @@ const Transfer = async (req: NextApiRequest, res: NextApiResponse) => {
       const email = browserCookie["email"];
       // @ts-ignore
       const body: string = req.body;
-      let { amount } = JSON.parse(body);
+      let { amount, receiverId } = JSON.parse(body);
+      console.log(receiverId);
       if (amount == undefined) throw Error("missing parameters");
 
-      if (!(await transferFunds(Number(amount), email)))
+      const transfer = await transferFunds(Number(amount), email, receiverId);
+      if (!transfer.success)
         res.status(401).send({
           success: false,
+          message: transfer.message,
         });
       res.send({
         success: true,

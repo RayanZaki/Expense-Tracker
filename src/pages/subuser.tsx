@@ -12,6 +12,7 @@ import Card from "@/Components/Utils/Card";
 import User from "@/Interfaces/User";
 import { useRouter } from "next/router";
 import { getGlobalBalance } from "../../lib/utils/mongo/meta";
+import DashBoard from "@/Components/DashBoard/DashBoard";
 
 const SubUser = ({
   username,
@@ -48,36 +49,39 @@ const SubUser = ({
       .then(() => router.reload())
       .catch((e) => console.log(e));
   };
+
   return (
     <>
-      <SideBar userName={username} subUser={subUser} />
-      <div className="body">
-        <div className="active">
-          <Container
-            title={"Sub users"}
-            extra={
-              !subUser && (
-                <p>
-                  Global Balance: {globalBalance}
-                  <span className="text-sm"> DZD</span>
-                </p>
-              )
-            }
-          >
-            <div className="flex flex-row flex-wrap gap-10 m-5 justify-center">
-              {subUsersArray.map((user) => (
-                <Card
-                  id={user._id}
-                  key={user._id}
-                  cardName={user.username}
-                  onDelete={onDelete}
-                  onEdit={onEdit}
-                />
-              ))}
-            </div>
-          </Container>
+      <DashBoard userName={username} subUser={subUser} transferOnly>
+        <div className="body">
+          <div className="active">
+            <Container
+              title={"Sub users"}
+              extra={
+                !subUser && (
+                  <p>
+                    Global Balance: {globalBalance}
+                    <span className="text-sm"> DZD</span>
+                  </p>
+                )
+              }
+            >
+              <div className="flex flex-row flex-wrap gap-10 m-5 justify-center">
+                {subUsersArray.map((user) => (
+                  <Card
+                    id={user._id}
+                    key={user._id}
+                    cardName={user.username}
+                    onDelete={onDelete}
+                    onEdit={onEdit}
+                    transferFund
+                  />
+                ))}
+              </div>
+            </Container>
+          </div>
         </div>
-      </div>
+      </DashBoard>
     </>
   );
 };

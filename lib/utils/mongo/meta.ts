@@ -86,19 +86,32 @@ export async function getGlobalBalance(email: string) {
   return metaData.globalBalance;
 }
 
-export async function transferFunds(amount: number, email: string) {
+export async function transferFunds(
+  amount: number,
+  email: string,
+  receiverId?: string
+) {
   try {
+    if (amount < 0) return { success: false, message: "Negative amount" };
     const id = await getUserId(email);
     if (await isSubUser(email)) {
       const metadata = await meta.findOne({ user: id });
-      if (metadata.totalBalance < amount) return false;
+      if (metadata.totalBalance < amount)
+        return { success: false, message: "Amount Exceeds balance" };
       await updateSalary(true, amount, id);
       const parentUser = await getParentByID(id);
       await updateSalary(false, amount, parentUser);
-      return true;
+      return { success: true };
+    } else {
+      const metaData = await meta.findOne({ user: id });
+      if (metaData.totalBalance < amount)
+        return { success: false, message: "Amount Exceeds balance" };
+      await updateSalary(true, amount, id);
+      await updateSalary(false, amount, receiverId!);
+      return { success: true };
     }
   } catch (e) {
     console.log(e);
-    return false;
+    return { success: false, message: "Server Error" };
   }
 }

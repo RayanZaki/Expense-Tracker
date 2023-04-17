@@ -18,6 +18,9 @@
     .btn-red {
         @apply border-red-500 bg-white hover:bg-red-500 hover:text-white border-2
     }
+    .btn-yellow {
+        @apply border-yellow-500 bg-white hover:bg-yellow-500 hover:text-white border-2
+    }
 
     .btn-green {
         @apply border-green-500 bg-white hover:bg-green-500 hover:text-white border-2
