@@ -1,18 +1,20 @@
-import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
 import { getTransactions } from "../../../../lib/utils/mongo/transaction";
 import { getSize } from "../../../../lib/utils/mongo/meta";
-import { getUserId } from "../../../../lib/utils/mongo/user";
 import { NextApiRequest, NextApiResponse } from "next";
 
+const jwt = require("jsonwebtoken");
 const Get = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "GET") {
     try {
       const { user, start } = req.query;
       if (user == undefined || start == undefined)
         throw Error("missing parameters");
-      const userId = await getUserId(user as string);
-      const size = await getSize(userId);
-      const transactions = await getTransactions(Number(start), userId);
+      let id: string;
+      jwt.verify(user, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        id = user.id;
+      });
+      const size = await getSize(id);
+      const transactions = await getTransactions(Number(start), id);
       await res.send({
         success: true,
         transactions: transactions,

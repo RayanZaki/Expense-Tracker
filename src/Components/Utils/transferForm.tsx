@@ -1,5 +1,6 @@
 import React, { ChangeEventHandler, useState } from "react";
 import Router from "next/router";
+import Error from "@/Components/Utils/Error";
 
 const TransferForm = ({ receiverId }: { receiverId: string }) => {
   let [amount, setAmount] = useState("");
@@ -41,11 +42,7 @@ const TransferForm = ({ receiverId }: { receiverId: string }) => {
         value={amount}
         onChange={toggleAmount}
       />
-      {error && (
-        <div className={"bg-red-300 p-3 my-auto text-black/70 rounded-2xl"}>
-          {errorMessage}
-        </div>
-      )}
+      {error && <Error errorMessage={errorMessage} />}
       <button className={"btn btn-bg"} onClick={transfer}>
         Submit
       </button>

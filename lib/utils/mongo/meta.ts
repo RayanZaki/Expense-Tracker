@@ -1,7 +1,14 @@
 import meta from "./Models/MetaData";
 import MetaData from "./Models/MetaData";
-import { getParentByID, getUserId, isSubUser, isSubUserById } from "./user";
+import {
+  getParentByID,
+  getUserId,
+  isSubUser,
+  isSubUserByEmail,
+  isSubUserById,
+} from "./user";
 
+const jwt = require("jsonwebtoken");
 export async function updateSalary(
   expense: boolean,
   amount: number,
@@ -79,8 +86,18 @@ export async function createUserMetaData(user: string) {
   }
 }
 
-export async function getGlobalBalance(email: string) {
-  const metaData = await meta.findOne({ user: await getUserId(email) });
+export async function deleteUserMetaData(user: string) {
+  return MetaData.deleteOne({ user: user });
+}
+
+export async function getGlobalBalance(token: string) {
+  let id: any;
+  jwt.verify(
+    token,
+    process.env.ACCESS_TOKEN_SECRET,
+    (err, user) => (id = user.id)
+  );
+  const metaData = await meta.findOne({ user: id });
   return metaData.globalBalance;
 }
 
@@ -92,7 +109,8 @@ export async function transferFunds(
   try {
     if (amount < 0) return { success: false, message: "Negative amount" };
     const id = await getUserId(email);
-    if (await isSubUser(email)) {
+
+    if (await isSubUserByEmail(email)) {
       const metadata = await meta.findOne({ user: id });
       if (metadata.totalBalance < amount)
         return { success: false, message: "Amount Exceeds balance" };

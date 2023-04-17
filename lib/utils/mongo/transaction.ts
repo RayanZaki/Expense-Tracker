@@ -7,7 +7,6 @@ mongoose.connect(process.env.MONGO_URI!).then(() => console.log("connected"));
 
 export async function getTransactions(start: number, user: string) {
   start = start === undefined ? 0 : start;
-  console.log(user);
   return Transaction.find({ owner: user }).skip(start).limit(5);
 }
 export async function addTransaction(t: transaction) {
@@ -44,8 +43,9 @@ export async function deleteTransaction(
 export async function editTransaction(t: transaction, ownerId: string) {
   // increment the number of transactions
 
-  console.log(t._id);
   const transaction = await Transaction.findById(t._id);
+
+  const oldAmount = transaction.amount;
 
   return Promise.all([
     transaction.updateOne({
@@ -55,6 +55,10 @@ export async function editTransaction(t: transaction, ownerId: string) {
       category: t.category,
       type: t.type,
     }),
-    updateSalary(t.type == "Expense", t.amount as number, ownerId),
+    updateSalary(
+      t.type == "Expense",
+      Number(t.amount) - Number(oldAmount),
+      ownerId
+    ),
   ]);
 }

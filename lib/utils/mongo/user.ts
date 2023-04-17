@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import Users from "./Models/users";
+import { deleteUserMetaData } from "./meta";
 
+const jwt = require("jsonwebtoken");
 mongoose.connect(process.env.MONGO_URI!).then(() => console.log("connected"));
 
 export async function checkIfExists(email: string) {
@@ -10,8 +12,8 @@ export async function checkIfExists(email: string) {
 
 export async function login(email: string, password: string) {
   if (!(await checkIfExists(email))) return false;
-  const userPassword = await Users.findOne({ email: email }).select("password");
-  return password == userPassword.password;
+  const user = await Users.findOne({ email: email });
+  return user;
 }
 
 export async function signUp(user: {
@@ -21,7 +23,6 @@ export async function signUp(user: {
   subUser: boolean;
   parentUser: string | null;
 }) {
-  console.log(user.subUser);
   const newUser = user.subUser
     ? new Users({
         email: user.email,
@@ -49,12 +50,27 @@ export async function getParentByID(id: string) {
   return res.parentUser;
 }
 
-export async function getUserName(email: string) {
-  const res = await Users.findOne({ email: email }).select("username");
-  return res ? res.username : null;
+export async function getUserName(token: string) {
+  let User;
+  jwt.verify(
+    token,
+    process.env.ACCESS_TOKEN_SECRET,
+    (err, user) => (User = user.username)
+  );
+  return User;
 }
 
-export async function isSubUser(email: string) {
+export async function isSubUser(token: string) {
+  let User: any;
+  jwt.verify(
+    token,
+    process.env.ACCESS_TOKEN_SECRET,
+    (err, user) => (User = user)
+  );
+  const res = await Users.findOne({ email: User.email });
+  return res.subUser;
+}
+export async function isSubUserByEmail(email: string) {
   const res = await Users.findOne({ email: email });
   return res.subUser;
 }
@@ -64,14 +80,21 @@ export async function isSubUserById(id: string) {
   return res.subUser;
 }
 
-export async function getSubUsers(email: string) {
+export async function getSubUsers(token: string) {
+  let id: any;
+  jwt.verify(
+    token,
+    process.env.ACCESS_TOKEN_SECRET,
+    (err, user) => (id = user.id)
+  );
   return Users.find({
     subUser: true,
-    parentUser: await getUserId(email),
+    parentUser: id,
   });
 }
 
 export async function deleteSubUser(id: string) {
+  await deleteUserMetaData(id);
   return Users.deleteOne({
     _id: id,
   });

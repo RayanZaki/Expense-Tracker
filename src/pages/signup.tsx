@@ -3,8 +3,8 @@ import Link from "next/link";
 import "@/../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import cookie from "cookie";
 import { NextApiRequest } from "next";
-import Router from "next/router";
 import { NextApiRequestQuery } from "next/dist/server/api-utils";
+import Router from "next/router";
 
 const Signup = ({ subUser }: { subUser: boolean }) => {
   let [email, setEmail] = useState("");
@@ -81,6 +81,7 @@ const Signup = ({ subUser }: { subUser: boolean }) => {
                   name={"subUser"}
                   value={1}
                   checked={subUser}
+                  readOnly
                 />
                 <div className="form-group mt-4 mb-4"></div>
                 <div className="form-group pt-1">
@@ -94,6 +95,16 @@ const Signup = ({ subUser }: { subUser: boolean }) => {
                   <span className="text-muted">Already a member?</span>
                   <Link href="/login">Log in</Link>
                 </p>
+              )}
+              {subUser && (
+                <button
+                  className={"btn"}
+                  onClick={() => {
+                    Router.push("/subuser").then(() => Router.reload());
+                  }}
+                >
+                  Back to Home PAge
+                </button>
               )}
             </div>
           </div>
@@ -113,10 +124,10 @@ export function getServerSideProps({
   query: NextApiRequestQuery;
 }) {
   const browserCookie = cookie.parse(req.headers.cookie || "");
-  const email = browserCookie["email"];
-  if (email != undefined && email != "") {
+  const accessToken = browserCookie["TOKEN"];
+  if (accessToken != undefined && accessToken != "") {
     const { user } = query;
-    if (user == email) {
+    if (user == accessToken) {
       return { props: { subUser: true } };
     }
     return {

@@ -1,12 +1,9 @@
 import cookie from "cookie";
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-  checkIfExists,
-  getUserId,
-  signUp,
-} from "../../../../lib/utils/mongo/user";
+import { checkIfExists, signUp } from "../../../../lib/utils/mongo/user";
 import { createUserMetaData } from "../../../../lib/utils/mongo/meta";
 
+const jwt = require("jsonwebtoken");
 const Add = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "POST") {
     try {
@@ -23,15 +20,20 @@ const Add = async (req: NextApiRequest, res: NextApiResponse) => {
 
       let exists: boolean = await checkIfExists(email);
       const browserCookie = cookie.parse(req.headers.cookie || "");
-      const parentEmail = browserCookie["email"];
-      console.log("here\n\n\n\n");
+      const parentAccessToken = browserCookie["TOKEN"];
+      let id: any;
+      jwt.verify(
+        parentAccessToken,
+        process.env.ACCESS_TOKEN_SECRET,
+        (err, user) => (id = user.id)
+      );
       if (!exists) {
         const newUser = await signUp({
           email: email,
           username: username,
           password: password,
           subUser: true,
-          parentUser: await getUserId(parentEmail),
+          parentUser: id,
         });
         await createUserMetaData(email);
         await res.status(302).redirect("/subuser");
@@ -40,7 +42,7 @@ const Add = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     } catch (e) {
       console.log(e);
-      res.status(400).send({ message: e, success: false });
+      res.status(400).send({ message: e.message, success: false });
       await res.status(400).redirect("/subuser");
     }
   } else {

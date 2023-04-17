@@ -1,13 +1,17 @@
 import { getSalary } from "../../../lib/utils/mongo/meta";
-import { getUserId } from "../../../lib/utils/mongo/user";
 import { NextApiRequest, NextApiResponse } from "next";
 
+const jwt = require("jsonwebtoken");
 const GetBalance = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "GET") {
     try {
       const { user } = req.query;
       if (user == undefined) throw Error("missing parameters");
-      const balance = await getSalary(await getUserId(user as string));
+      let id: string = "";
+      jwt.verify(user, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        id = user.id;
+      });
+      const balance = await getSalary(id);
       await res.send({
         success: true,
         balance: balance,

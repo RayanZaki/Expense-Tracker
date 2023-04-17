@@ -90,8 +90,8 @@ export function getServerSideProps({ req }: { req: NextApiRequest }) {
   const browserCookie = cookie.parse(
     req ? req.headers.cookie || "" : document.cookie
   );
-  const email = browserCookie["email"];
-  if (email != undefined && email != "") {
+  const accessToken = browserCookie["TOKEN"];
+  if (accessToken != undefined && accessToken != "") {
     return {
       redirect: {
         destination: "/",

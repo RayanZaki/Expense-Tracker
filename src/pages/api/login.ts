@@ -1,6 +1,8 @@
 import { getUserName, login } from "../../../lib/utils/mongo/user";
 import { serialize } from "cookie";
 import { NextApiRequest, NextApiResponse } from "next";
+const jwt = require("jsonwebtoken");
+
 const Login = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "POST") {
     try {
@@ -10,12 +12,20 @@ const Login = async (req: NextApiRequest, res: NextApiResponse) => {
         res.status(401).redirect("/login");
       }
 
-      let exists: boolean = await login(email, password);
-      if (exists) {
-        const username = await getUserName(email);
+      let user = await login(email, password);
+      const currentUser = {
+        id: user._id.toString(),
+        email: user.email,
+        username: user.username,
+      };
+      if (user.password === password) {
+        const accessToken = jwt.sign(
+          currentUser,
+          process.env.ACCESS_TOKEN_SECRET
+        );
         await res.setHeader(
           "Set-Cookie",
-          serialize("email", email, { path: "/" })
+          serialize("TOKEN", accessToken, { path: "/" })
         );
         await res.redirect("/");
       } else {

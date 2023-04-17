@@ -8,7 +8,11 @@ import { useRouter } from "next/router";
 import cookie from "cookie";
 import { useCookies } from "react-cookie";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getUserName, isSubUser } from "../../lib/utils/mongo/user";
+import {
+  getUserName,
+  getUserNameByToken,
+  isSubUser,
+} from "../../lib/utils/mongo/user";
 
 export const indexContext = createContext({
   provided: false,
@@ -30,14 +34,14 @@ const Home = ({
   subUser: boolean;
 }) => {
   const router = useRouter();
-  const [emailCookie] = useCookies(["email"]);
+  const [emailCookie] = useCookies(["TOKEN"]);
   let [transactionsList, setTransactions] = useState(transactions);
   // index of the current position / 5
   let [currentPos, setCurrentPos] = useState(0);
   useEffect(() => {
-    const email = emailCookie.email;
+    const accessToken = emailCookie.TOKEN;
     fetch(
-      `http://localhost:3000/api/transaction/get?start=${currentPos}&user=${email}`
+      `http://localhost:3000/api/transaction/get?start=${currentPos}&user=${accessToken}`
     )
       .then((res) => {
         res.json().then((res) => {
@@ -95,8 +99,8 @@ export async function getServerSideProps({
   const browserCookie = cookie.parse(
     req ? req.headers.cookie || "" : document.cookie
   );
-  const email = browserCookie["email"];
-  if (email == undefined || email == "") {
+  const accessToken = browserCookie["TOKEN"];
+  if (accessToken == undefined || accessToken == "") {
     return {
       redirect: {
         destination: "/login",
@@ -106,27 +110,28 @@ export async function getServerSideProps({
   }
   const [categoriesReq, transactionsReq, balanceReq, username, subUser] =
     await Promise.all([
-      fetch(`http://localhost:3000/api/category/get?user=${email}`)
+      fetch(`http://localhost:3000/api/category/get?user=${accessToken}`)
         .then((res) => res.json())
         .catch((e) => console.error(e)),
-      fetch(`http://localhost:3000/api/transaction/get?start=0&user=${email}`)
+      fetch(
+        `http://localhost:3000/api/transaction/get?start=0&user=${accessToken}`
+      )
         .then((res) => res.json())
         .catch((e) => console.error(e)),
-      fetch(`http://localhost:3000/api/getBalance?user=${email}`)
+      fetch(`http://localhost:3000/api/getBalance?user=${accessToken}`)
         .then((res) => res.json())
         .catch((e) => console.error(e)),
-      getUserName(email),
-      isSubUser(email),
+      getUserName(accessToken),
+      isSubUser(accessToken),
     ]);
-  console.log(transactionsReq);
   return {
     props: {
       categories: categoriesReq.categories,
       transactions: transactionsReq.transactions,
       size: transactionsReq.size,
       balance: balanceReq.balance,
-      userName: username,
       subUser: subUser,
+      userName: username,
     },
   };
 }
