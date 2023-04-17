@@ -1,7 +1,4 @@
-import {
-  addTransaction,
-  editTransaction,
-} from "../../../../lib/utils/mongo/transaction";
+import { editTransaction } from "../../../../lib/utils/mongo/transaction";
 import cookie from "cookie";
 import { getUserId } from "../../../../lib/utils/mongo/user";
 import { NextApiRequest, NextApiResponse } from "next";

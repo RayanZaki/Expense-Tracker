@@ -44,7 +44,8 @@ export async function deleteTransaction(
 export async function editTransaction(t: transaction, ownerId: string) {
   // increment the number of transactions
 
-  const transaction = Transaction.findById(ownerId);
+  console.log(t._id);
+  const transaction = await Transaction.findById(t._id);
 
   return Promise.all([
     transaction.updateOne({

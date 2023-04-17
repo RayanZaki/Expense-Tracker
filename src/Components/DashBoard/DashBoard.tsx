@@ -11,7 +11,6 @@ import Container from "@/Components/Utils/Container";
 import TransactionForm from "@/Components/Transaction/TransactionForm";
 import { bool } from "prop-types";
 import TransferForm from "@/Components/Utils/transferForm";
-import transactionForm from "@/Components/Transaction/TransactionForm";
 
 // Context for changing the visibility of the modal
 export const ModalContext: Context<any> = createContext({

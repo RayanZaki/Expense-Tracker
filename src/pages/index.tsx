@@ -42,9 +42,12 @@ const Home = ({
       .then((res) => {
         res.json().then((res) => {
           for (let elem of res.transactions) {
-            elem.category = categories.find(
-              (e: { _id: string; name: string }) => e._id === elem.category
-            )!.name;
+            elem.category = {
+              name: categories.find(
+                (e: { _id: string; name: string }) => e._id === elem.category
+              )!.name,
+              id: elem.category,
+            };
           }
           setTransactions(res.transactions);
         });
