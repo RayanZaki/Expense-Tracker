@@ -3,8 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 const jwt = require("jsonwebtoken");
 const Delete = async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log("hi")
-  if (req.method === "DELETE") {
+  if (req.method === "POST") {
     try {
       const body: string = req.body;
       const { id, type, amount, user } = await JSON.parse(body);

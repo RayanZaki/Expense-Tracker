@@ -37,7 +37,7 @@ const TransactionList = ({ list, router }: Prop) => {
   const handleDelete: MouseEventHandler = (e) => {
     const accessToken = emailCookie.TOKEN;
     fetch("http://localhost:3000/api/transaction/delete", {
-      method: "DELETE",
+      method: "POST",
       body: JSON.stringify({
         id: transaction._id,
         type: transaction.type,
