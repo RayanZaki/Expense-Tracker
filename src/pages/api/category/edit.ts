@@ -1,7 +1,7 @@
 import { editCategory } from "../../../../lib/utils/mongo/categories";
-import { getUserId } from "../../../../lib/utils/mongo/user";
 import { NextApiRequest, NextApiResponse } from "next";
 
+const jwt = require("jsonwebtoken");
 const Update = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
@@ -9,7 +9,14 @@ const Update = async (req: NextApiRequest, res: NextApiResponse) => {
       const { oldName, newName, user } = JSON.parse(body);
       if (oldName === undefined || newName === undefined || user == undefined)
         throw Error("Incorrect parameters");
-      await editCategory(oldName, newName, await getUserId(user));
+
+      let id: any;
+      jwt.verify(
+        user,
+        process.env.ACCESS_TOKEN_SECRET,
+        (err, users) => (id = users.id)
+      );
+      await editCategory(oldName, newName, id);
       res.send({ success: true });
     } catch (e) {
       console.log(e);

@@ -1,9 +1,9 @@
 import { deleteTransaction } from "../../../../lib/utils/mongo/transaction";
-import { MongoInvalidArgumentError } from "mongodb";
-import { getUserId } from "../../../../lib/utils/mongo/user";
 import { NextApiRequest, NextApiResponse } from "next";
 
+const jwt = require("jsonwebtoken");
 const Delete = async (req: NextApiRequest, res: NextApiResponse) => {
+  console.log("hi")
   if (req.method === "DELETE") {
     try {
       const body: string = req.body;
@@ -14,14 +14,15 @@ const Delete = async (req: NextApiRequest, res: NextApiResponse) => {
         amount == undefined ||
         user == undefined
       )
-        throw new MongoInvalidArgumentError("missing parameters");
-      console.log(id, type, amount, user);
-      await deleteTransaction(
-        id,
-        type == "Expense",
-        amount as number,
-        await getUserId(user)
+        throw new Error("missing parameters");
+
+      let userId: any;
+      jwt.verify(
+        user,
+        process.env.ACCESS_TOKEN_SECRET,
+        (err: any, users: any) => (userId = users.id)
       );
+      await deleteTransaction(id, type == "Expense", Number(amount), userId);
       res.send({ success: true });
     } catch (e) {
       console.log(e);

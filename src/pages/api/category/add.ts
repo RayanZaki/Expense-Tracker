@@ -1,7 +1,7 @@
 import { addCategory } from "../../../../lib/utils/mongo/categories";
-import { getUserId } from "../../../../lib/utils/mongo/user";
 import { NextApiRequest, NextApiResponse } from "next";
 
+const jwt = require("jsonwebtoken");
 const Add = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
@@ -9,7 +9,13 @@ const Add = async (req: NextApiRequest, res: NextApiResponse) => {
       const body: string = req.body;
       if (body === undefined) throw Error("no category");
       const { category, user } = await JSON.parse(body);
-      await addCategory(category, await getUserId(user));
+      let id: any;
+      jwt.verify(
+        user,
+        process.env.ACCESS_TOKEN_SECRET,
+        (err, users) => (id = users.id)
+      );
+      await addCategory(category, id);
       res.send({ success: true });
     } catch (e) {
       console.log(e);

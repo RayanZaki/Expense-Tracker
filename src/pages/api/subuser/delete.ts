@@ -2,11 +2,10 @@ import { deleteSubUser } from "../../../../lib/utils/mongo/user";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const Delete = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === "DELETE") {
+  if (req.method === "POST") {
     try {
       const body: string = req.body;
       if (body === null) throw Error("no id");
-      console.log("hi\n\n\n\n");
       const { id } = await JSON.parse(body);
       await deleteSubUser(id);
       res.send({ success: true });

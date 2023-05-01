@@ -3,6 +3,7 @@ import cookie from "cookie";
 import { getUserId } from "../../../../lib/utils/mongo/user";
 import { NextApiRequest, NextApiResponse } from "next";
 
+const jwt = require("jsonwebtoken");
 const Edit = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "POST") {
     try {
@@ -13,7 +14,14 @@ const Edit = async (req: NextApiRequest, res: NextApiResponse) => {
       const body: string = req.body;
       let { transaction } = JSON.parse(body);
       if (transaction === undefined) throw Error("missing params");
-      const transactionOwner = await getUserId(browserCookie["email"]);
+      let userId: any;
+      const accessToken = browserCookie["TOKEN"];
+      jwt.verify(
+        accessToken,
+        process.env.ACCESS_TOKEN_SECRET,
+        (err, users) => (userId = users.id)
+      );
+      const transactionOwner = userId;
       await editTransaction(transaction, transactionOwner);
       res.send({
         success: true,
@@ -23,7 +31,6 @@ const Edit = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(400).send({ message: e, success: false });
     }
   } else {
-    console.log("bad method");
     res.status(403).send({ message: "Bad method", success: false });
   }
   return;

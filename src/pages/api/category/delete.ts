@@ -1,14 +1,22 @@
 import { deleteCategory } from "../../../../lib/utils/mongo/categories";
-import { getUserId } from "../../../../lib/utils/mongo/user";
 import { NextApiRequest, NextApiResponse } from "next";
 
+const jwt = require("jsonwebtoken");
+
 const Delete = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === "DELETE") {
+  console.log("deleting");
+  if (req.method === "POST") {
     try {
       const body: string = req.body;
       if (body === null) throw Error("no category");
       const { category, user } = await JSON.parse(body);
-      await deleteCategory(category, await getUserId(user));
+      let id: any;
+      jwt.verify(
+        user,
+        process.env.ACCESS_TOKEN_SECRET,
+        (err, users) => (id = users.id)
+      );
+      await deleteCategory(category, id);
       res.send({ success: true });
     } catch (e) {
       console.log(e);

@@ -55,6 +55,7 @@ const DashBoard = ({
             <TransactionForm
               currentTransaction={transaction}
               setTransaction={setTransaction}
+              toggleTransactionModal={toggleTransactionModal}
             />
           </Container>
         </Modal>

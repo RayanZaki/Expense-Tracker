@@ -28,7 +28,7 @@ const SubUser = ({
   const router = useRouter();
   const onDelete = (name: string, id: string) => {
     fetch("http://localhost:3000/api/subuser/delete", {
-      method: "DELETE",
+      method: "POST",
       body: JSON.stringify({
         id: id,
       }),
@@ -89,16 +89,15 @@ export default SubUser;
 
 export async function getServerSideProps({ req }: { req: NextApiRequest }) {
   const browserCookie = cookie.parse(req.headers.cookie || "");
-  const email = browserCookie["email"];
+  const accessToken = browserCookie["TOKEN"];
 
   const [username, subUser, subUsers, globalBalance] = await Promise.all([
-    getUserName(email),
-    isSubUser(email),
-    getSubUsers(email),
-    getGlobalBalance(email),
+    getUserName(accessToken),
+    isSubUser(accessToken),
+    getSubUsers(accessToken),
+    getGlobalBalance(accessToken),
   ]);
 
-  console.log(subUsers);
   return {
     props: {
       username: username,

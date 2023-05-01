@@ -1,10 +1,4 @@
-import { deleteCategory } from "../../../../lib/utils/mongo/categories";
-import { Request } from "next/dist/compiled/@edge-runtime/primitives/fetch";
-import {
-  deleteSubUser,
-  editSubUser,
-  getUserId,
-} from "../../../../lib/utils/mongo/user";
+import { editSubUser } from "../../../../lib/utils/mongo/user";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const Delete = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -12,7 +6,6 @@ const Delete = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const body: string = req.body;
       if (body === null) throw Error("no id");
-      console.log("hi\n\n\n\n");
       const { id, NewUserName } = await JSON.parse(body);
       await editSubUser(id, NewUserName);
       res.send({ success: true });

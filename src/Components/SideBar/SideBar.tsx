@@ -25,7 +25,7 @@ const SideBar = ({
     toggleTransferModal: MouseEventHandler;
   } = useContext(ModalContext);
   let route = useRouter().route;
-  const [cookie] = useCookies(["email"]);
+  const [cookie] = useCookies(["TOKEN"]);
   const logout = () => {
     fetch("http://localhost:3000/api/logout")
       .then(() => Router.push("/login"))
@@ -67,7 +67,7 @@ const SideBar = ({
           </button>
         )}
         {!subUser && route == "/subuser" && (
-          <Link href={`/signup?user=${cookie.email}`}>
+          <Link href={`/signup?user=${cookie.TOKEN}`}>
             <li className={"btn bg-primary"}>Add Sub User</li>
           </Link>
         )}

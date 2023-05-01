@@ -13,7 +13,6 @@ export const categoryContext = createContext({
 });
 const Category = ({
   categories,
-  email,
   userName,
   subUser,
 }: {
@@ -28,39 +27,40 @@ const Category = ({
     changeInput(e.target.value);
   };
 
+  const [emailCookie] = useCookies(["TOKEN"]);
+
   const addCat = (input: string) => {
     fetch("http://localhost:3000/api/category/add", {
       method: "POST",
       body: JSON.stringify({
         category: input,
-        user: email,
+        user: emailCookie.TOKEN,
       }),
     })
       .then(() => router.reload())
       .catch((reason) => console.log(reason));
   };
-  const [emailCookie] = useCookies(["email"]);
 
   const deleteCat = (name: string, id: string) => {
     fetch("http://localhost:3000/api/category/delete", {
-      method: "DELETE",
+      method: "POST",
       body: JSON.stringify({
         category: name,
-        user: emailCookie.email,
+        user: emailCookie.TOKEN,
       }),
     })
       .then(() => router.reload())
       .catch((e) => console.log("error: ", e));
   };
 
-  const editCat = (cardName: string, name: string) => {
+  const editCat = (newName: string, oldName: string) => {
     try {
       fetch(`http://localhost:3000/api/category/edit`, {
         method: "POST",
         body: JSON.stringify({
-          oldName: cardName,
-          newName: name,
-          user: emailCookie.email,
+          newName: newName,
+          oldName: oldName,
+          user: emailCookie.TOKEN,
         }),
       })
         .then((value) => router.reload())
@@ -101,6 +101,7 @@ const Category = ({
               <div className="flex flex-row flex-wrap gap-10 m-5 justify-center">
                 {categories.map((cat) => (
                   <Card
+                    id={cat.name}
                     key={cat._id}
                     cardName={cat.name}
                     onDelete={deleteCat}
@@ -123,19 +124,18 @@ export async function getServerSideProps({ req }: { req: NextApiRequest }) {
     req ? req.headers.cookie || "" : document.cookie
   );
 
-  const email = browserCookie["email"];
+  const accessToken = browserCookie["TOKEN"];
   const [categories, username, subUser] = await Promise.all([
-    fetch(`http://localhost:3000/api/category/get?user=${email}`).then((res) =>
-      res.json()
+    fetch(`http://localhost:3000/api/category/get?user=${accessToken}`).then(
+      (res) => res.json()
     ),
-    getUserName(email),
-    isSubUser(email),
+    getUserName(accessToken),
+    isSubUser(accessToken),
   ]);
 
   return {
     props: {
       categories: categories.categories,
-      email: browserCookie["email"],
       userName: username,
       subUser: subUser,
     },

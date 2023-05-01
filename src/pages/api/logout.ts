@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
 import { serialize } from "cookie";
-const logout = async (req: NextRequest, res: NextResponse) => {
-  await res.setHeader("Set-Cookie", serialize("email", "", { path: "/" }));
+import { NextApiRequest, NextApiResponse } from "next";
+const logout = async (req: NextApiRequest, res: NextApiResponse) => {
+  await res.setHeader("Set-Cookie", serialize("TOKEN", "", { path: "/" }));
   await res.redirect("/login");
 };
 

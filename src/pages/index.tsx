@@ -10,7 +10,6 @@ import { useCookies } from "react-cookie";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   getUserName,
-  getUserNameByToken,
   isSubUser,
 } from "../../lib/utils/mongo/user";
 
