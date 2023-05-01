@@ -29,7 +29,7 @@ const Login = async (req: NextApiRequest, res: NextApiResponse) => {
         );
         await res.redirect("/");
       } else {
-        await res.status(401).redirect("/login");
+        await res.status(401).redirect("/login?error=1");
       }
     } catch (e) {
       console.log(e);

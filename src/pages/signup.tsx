@@ -2,23 +2,32 @@ import React, { ChangeEventHandler, useState } from "react";
 import Link from "next/link";
 import "@/../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import cookie from "cookie";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Router from "next/router";
 
-const Signup = ({ subUser }: { subUser: boolean }) => {
+const Signup = ({
+  subUser,
+  error,
+}: {
+  subUser: boolean;
+  error: { message: string };
+}) => {
   let [email, setEmail] = useState("");
   let [username, setUserName] = useState("");
   let [password, setPassword] = useState("");
 
   const handleEmail: ChangeEventHandler = (event) => {
+    // @ts-ignore
     setEmail(event.target.value);
   };
 
   const handleUserName: ChangeEventHandler = (event) => {
+    // @ts-ignore
     setUserName(event.target.value);
   };
   const handlePassword: ChangeEventHandler = (event) => {
+    // @ts-ignore
     setPassword(event.target.value);
   };
 
@@ -75,6 +84,12 @@ const Signup = ({ subUser }: { subUser: boolean }) => {
                     onChange={handlePassword}
                   />
                 </div>
+                {!!error && (
+                  <p className="p-2 bg-red-400 text-white text-center font-bold mt-4 rounded-sm">
+                    {" "}
+                    {error.message}{" "}
+                  </p>
+                )}
                 <input
                   type={"radio"}
                   className={"invisible"}
@@ -118,9 +133,11 @@ export default Signup;
 
 export function getServerSideProps({
   req,
+  res,
   query,
 }: {
   req: NextApiRequest;
+  res: NextApiResponse;
   query: NextApiRequestQuery;
 }) {
   const browserCookie = cookie.parse(req.headers.cookie || "");
@@ -137,5 +154,12 @@ export function getServerSideProps({
       },
     };
   }
+  const { error } = query;
+  if (Number(error) === 1) {
+    return {
+      props: { error: { message: "User with this email already Exists" } },
+    };
+  }
+
   return { props: { subUser: false } };
 }

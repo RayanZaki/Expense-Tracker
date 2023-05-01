@@ -3,8 +3,9 @@ import Link from "next/link";
 import "@/../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import cookie from "cookie";
 import { NextApiRequest } from "next";
+import { NextApiRequestQuery } from "next/dist/server/api-utils";
 
-const Login = () => {
+const Login = ({error}: {error?: {message: string}}) => {
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
 
@@ -65,6 +66,11 @@ const Login = () => {
                     onChange={handlePassword}
                   />
                 </div>
+                {!!error && (
+                  <p className="p-2 bg-red-400 text-white text-center font-bold mt-4 rounded-sm">
+                    {error!.message}
+                  </p>
+                )}
                 <div className="form-group mt-4 mb-4"></div>
                 <div className="form-group pt-1">
                   <button className="btn btn-primary btn-block" type="submit">
@@ -86,7 +92,13 @@ const Login = () => {
 
 export default Login;
 
-export function getServerSideProps({ req }: { req: NextApiRequest }) {
+export function getServerSideProps({
+  req,
+  query,
+}: {
+  req: NextApiRequest;
+  query: NextApiRequestQuery;
+}) {
   const browserCookie = cookie.parse(
     req ? req.headers.cookie || "" : document.cookie
   );
@@ -98,6 +110,10 @@ export function getServerSideProps({ req }: { req: NextApiRequest }) {
         permanent: false,
       },
     };
+  }
+  const { error } = query;
+  if (Number(error) === 1) {
+    return { props: { error: { message: "Incorrect email or Password" } } };
   }
   return { props: {} };
 }

@@ -36,7 +36,7 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
 
         await res.status(302).redirect("/");
       } else {
-        await res.redirect("/signup");
+        await res.status(409).redirect("/signup?error=1");
       }
     } catch (e) {
       console.log(e);
