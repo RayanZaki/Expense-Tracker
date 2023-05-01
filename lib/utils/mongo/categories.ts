@@ -5,12 +5,20 @@ import mongoose from "mongoose";
 mongoose.connect(process.env.MONGO_URI!).then(() => console.log("connected"));
 
 export async function getCategoryId(name: String, user: string) {
+  try { 
   return Category.findOne({ name: name, owner: user });
+  } catch ( e ) {
+    console.log(e);
+  }
 }
 
 export async function addCategory(name: String, user: string) {
+ try{
   const newCat = new Category({ name: name, owner: user });
   return newCat.save();
+} catch ( e ) {
+  console.log(e);
+}
 }
 
 export async function getCategoryName(id: string) {

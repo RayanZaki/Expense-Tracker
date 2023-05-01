@@ -2,18 +2,22 @@ import { checkIfExists, signUp } from "../../../lib/utils/mongo/user";
 import cookie, { serialize } from "cookie";
 import { createUserMetaData } from "../../../lib/utils/mongo/meta";
 import { NextApiRequest, NextApiResponse } from "next";
+import Login from "./login";
 
 const jwt = require("jsonwebtoken");
+
 const login = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "POST") {
     try {
       const body = req.body;
       const { email, username, password } = body;
+
       if (
         email == undefined ||
         username == undefined ||
         password == undefined
       ) {
+
         await res.status(400).redirect("/signup");
         return;
       }
@@ -28,7 +32,17 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
           parentUser: "",
         });
         await createUserMetaData(email);
-        const accessToken = jwt.sign(newUser, process.env.ACCESS_TOKEN_SECRET);
+        
+        console.log(newUser);
+
+        const currentUser = {
+          id: newUser._id.toString(),
+          email: newUser.email,
+          username: newUser.username,
+        };
+
+        const accessToken = jwt.sign(currentUser, process.env.ACCESS_TOKEN_SECRET);
+        
         await res.setHeader(
           "Set-Cookie",
           serialize("TOKEN", accessToken, { path: "/" })

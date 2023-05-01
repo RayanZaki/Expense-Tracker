@@ -11,9 +11,13 @@ export async function checkIfExists(email: string) {
 }
 
 export async function login(email: string, password: string) {
+  try {
   if (!(await checkIfExists(email))) return false;
   const user = await Users.findOne({ email: email });
   return user;
+  } catch(e) {
+    console.log(e);
+  }
 }
 
 export async function signUp(user: {
