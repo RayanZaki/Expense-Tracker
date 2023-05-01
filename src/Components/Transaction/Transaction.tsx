@@ -28,6 +28,7 @@ const Transaction = ({ data, header, onClick }: TransactionProps) => {
                 type: data!.type,
                 amount: data!.amount,
                 date: data!.date,
+                // @ts-ignore
                 category: data!.category.id,
                 // category: data!.category,
               })
@@ -43,6 +44,7 @@ const Transaction = ({ data, header, onClick }: TransactionProps) => {
           {!(header || false) && <span className="pl-2 text-sm">DZD</span>}
         </p>
         <p>{!(header || false) ? data!.date : "Date"}</p>
+        {/*@ts-ignore*/}
         <p>{!(header || false) ? data!.category.name : "Category"}</p>
         {!(header || false) && (
           <p

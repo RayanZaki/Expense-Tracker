@@ -95,7 +95,7 @@ export async function getGlobalBalance(token: string) {
   jwt.verify(
     token,
     process.env.ACCESS_TOKEN_SECRET,
-    (err, user) => (id = user.id)
+    (err: any, user: any) => (id = user.id)
   );
   const metaData = await meta.findOne({ user: id });
   return metaData.globalBalance;

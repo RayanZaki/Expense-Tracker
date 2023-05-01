@@ -8,6 +8,7 @@ const TransferForm = ({ receiverId }: { receiverId: string }) => {
   let [errorMessage, setErrorMessage] = useState("");
 
   const toggleAmount: ChangeEventHandler = (event) => {
+    // @ts-ignore
     setAmount(event.target.value);
   };
   const transfer = (event) => {

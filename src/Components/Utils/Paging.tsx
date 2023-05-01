@@ -11,8 +11,14 @@ const Paging = (Props: {
   max: number;
   pos: { pos: number; setter: Function };
 }) => {
-  let current =
+  let current: number;
+
+  if ( Props.size === 0 )
+    current = 0;
+  else {
+ current =
     Props.size % 5 == 0 ? Props.pos.pos + 5 : Props.pos.pos + Props.size;
+  }
   const goBack = () => {
     Props.pos.setter(Props.pos.pos - 5);
   };

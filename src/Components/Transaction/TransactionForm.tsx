@@ -59,7 +59,9 @@ const TransactionForm = ({
       category === "Category"
     ) {
       if (category === "Category") {
-        setError("Missing Category");
+        setError(
+          "Missing Category, Please add a Category then add a transaction"
+        );
         setSubmit(false);
         return;
       }
@@ -129,18 +131,27 @@ const TransactionForm = ({
   };
 
   let [title, setTitle] = useState(
+    // @ts-ignore
     currentTransaction === "" ? "" : currentTransaction.title
   );
   let [amount, setAmount] = useState(
+    // @ts-ignore
+
     currentTransaction === "" ? "" : currentTransaction.amount
   );
   let [date, setDate] = useState(
+    // @ts-ignore
+
     currentTransaction === "" ? "" : currentTransaction.date
   );
   let [category, setCategory] = useState(
+    // @ts-ignore
+
     currentTransaction === "" ? "Category" : currentTransaction.category
   );
   let [radio, setRadio] = useState(
+    // @ts-ignore
+
     currentTransaction === "" ? "Expense" : currentTransaction.type
   );
 

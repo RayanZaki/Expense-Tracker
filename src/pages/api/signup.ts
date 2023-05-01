@@ -5,6 +5,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Login from "./login";
 
 const jwt = require("jsonwebtoken");
+const bcrypt = require('bcrypt');
 
 const login = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "POST") {
@@ -27,13 +28,12 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
         const newUser = await signUp({
           email: email,
           username: username,
-          password: password,
+          password: bcrypt.hashSync(password, 10),
           subUser: false,
           parentUser: "",
         });
         await createUserMetaData(email);
         
-        console.log(newUser);
 
         const currentUser = {
           id: newUser._id.toString(),

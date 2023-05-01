@@ -1,7 +1,9 @@
 import { getUserName, login } from "../../../lib/utils/mongo/user";
 import { serialize } from "cookie";
 import { NextApiRequest, NextApiResponse } from "next";
+
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const Login = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "POST") {
@@ -18,7 +20,9 @@ const Login = async (req: NextApiRequest, res: NextApiResponse) => {
         email: user.email,
         username: user.username,
       };
-      if (user.password === password) {
+
+      if (bcrypt.compareSync(password, user.password)) {
+        // Passwords match
         const accessToken = jwt.sign(
           currentUser,
           process.env.ACCESS_TOKEN_SECRET
@@ -29,6 +33,7 @@ const Login = async (req: NextApiRequest, res: NextApiResponse) => {
         );
         await res.redirect("/");
       } else {
+        // Passwords don't match
         await res.status(401).redirect("/login?error=1");
       }
     } catch (e) {
